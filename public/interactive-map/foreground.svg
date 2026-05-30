@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+  <!-- Optional foreground  replace or delete layer in InteractiveMapScene if unused -->
+  <g opacity="0.9">
+    <!-- pier -->
+    <rect x="120" y="780" width="280" height="24" rx="6" fill="#a16207"/>
+    <rect x="120" y="804" width="24" height="120" fill="#92400e"/>
+    <rect x="376" y="804" width="24" height="120" fill="#92400e"/>
+    <!-- soft props -->
+    <circle cx="280" cy="900" r="36" fill="#fcd34d" opacity="0.5"/>
+    <circle cx="1680" cy="860" r="48" fill="#fda4af" opacity="0.35"/>
+  </g>
+</svg>

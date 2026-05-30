@@ -1,0 +1,286 @@
+.cadu-anim-panel {
+  position: fixed;
+  left: 1rem;
+  bottom: 5.5rem;
+  z-index: 140;
+  width: min(18.5rem, calc(100vw - 2rem));
+  pointer-events: auto;
+  border-radius: 1rem;
+  background: rgba(255, 252, 250, 0.94);
+  border: 1px solid rgba(92, 45, 58, 0.14);
+  box-shadow: 0 16px 40px rgba(92, 45, 58, 0.16);
+  color: #5c2d3a;
+  backdrop-filter: blur(10px);
+}
+
+.cadu-anim-panel.is-collapsed {
+  width: auto;
+  min-width: 10rem;
+}
+
+.cadu-anim-panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.65rem 0.85rem 0.55rem;
+  border-bottom: 1px solid rgba(92, 45, 58, 0.08);
+}
+
+.cadu-anim-panel.is-collapsed .cadu-anim-panel__head {
+  border-bottom: none;
+  padding-bottom: 0.65rem;
+}
+
+.cadu-anim-panel__title {
+  margin: 0;
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.cadu-anim-panel__toggle {
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.15rem 0.35rem;
+  line-height: 1;
+}
+
+.cadu-anim-panel__head-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.cadu-anim-panel__mode-btn {
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0.15rem 0.35rem;
+  line-height: 1;
+  border-radius: 6px;
+  opacity: 0.75;
+}
+
+.cadu-anim-panel__mode-btn:hover,
+.cadu-anim-panel__mode-btn.is-active {
+  opacity: 1;
+  background: rgba(225, 85, 108, 0.12);
+}
+
+.cadu-anim-panel__rename-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.cadu-anim-panel__rename-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+}
+
+.cadu-anim-panel__play-btn {
+  flex-shrink: 0;
+  width: 1.85rem;
+  height: 1.85rem;
+  border-radius: 999px;
+  border: 1px solid rgba(92, 45, 58, 0.14);
+  background: rgba(255, 255, 255, 0.9);
+  color: #5c2d3a;
+  cursor: pointer;
+  font-size: 0.62rem;
+  padding: 0;
+}
+
+.cadu-anim-panel__play-btn.is-active {
+  background: linear-gradient(135deg, #e1556c, #ffa0a8);
+  border-color: transparent;
+  color: #fff;
+}
+
+.cadu-anim-panel__rename-fields {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.cadu-anim-panel__rename-input {
+  width: 100%;
+  border: 1px solid rgba(92, 45, 58, 0.18);
+  border-radius: 8px;
+  padding: 0.38rem 0.5rem;
+  font-size: 0.78rem;
+  color: #5c2d3a;
+  background: #fff;
+}
+
+.cadu-anim-panel__rename-tech {
+  font-size: 0.62rem;
+  opacity: 0.55;
+  word-break: break-all;
+}
+
+.cadu-anim-panel__rename-actions {
+  display: flex;
+  gap: 0.45rem;
+  margin-top: 0.65rem;
+}
+
+.cadu-anim-panel__btn--ghost {
+  background: transparent;
+}
+
+.cadu-anim-panel__active-tech {
+  opacity: 0.55;
+  font-size: 0.68rem;
+}
+
+.cadu-anim-panel__body {
+  padding: 0.65rem 0.85rem 0.85rem;
+  max-height: min(52vh, 28rem);
+  overflow: auto;
+}
+
+.cadu-anim-panel__hint {
+  margin: 0 0 0.55rem;
+  font-size: 0.72rem;
+  opacity: 0.72;
+}
+
+.cadu-anim-panel__error {
+  margin: 0 0 0.55rem;
+  font-size: 0.72rem;
+  color: #b42318;
+  font-weight: 650;
+}
+
+.cadu-anim-panel__section-title {
+  margin: 0.75rem 0 0.35rem;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.65;
+}
+
+.cadu-anim-panel__grid--clips .cadu-anim-panel__btn--clip {
+  font-size: 0.62rem;
+  font-weight: 600;
+  word-break: break-all;
+  border-radius: 0.65rem;
+  padding: 0.38rem 0.5rem;
+}
+
+.cadu-anim-panel__btn.is-missing {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.cadu-anim-panel__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.45rem;
+  margin-top: 0.45rem;
+}
+
+.cadu-anim-panel__btn {
+  border: 1px solid rgba(92, 45, 58, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.85);
+  color: #5c2d3a;
+  font-size: 0.72rem;
+  font-weight: 650;
+  padding: 0.42rem 0.65rem;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.cadu-anim-panel__btn:hover {
+  background: #fff;
+  border-color: rgba(225, 85, 108, 0.35);
+}
+
+.cadu-anim-panel__btn.is-active {
+  background: linear-gradient(135deg, #e1556c, #ffa0a8);
+  border-color: transparent;
+  color: #fff;
+}
+
+.cadu-anim-panel__active {
+  margin: 0.65rem 0 0;
+  font-size: 0.72rem;
+  opacity: 0.85;
+}
+
+.cadu-anim-panel__role-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: 0.25rem;
+}
+
+.cadu-anim-panel__role-chip {
+  border: 1px solid rgba(92, 45, 58, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.75);
+  color: #5c2d3a;
+  font-size: 0.62rem;
+  font-weight: 650;
+  padding: 0.22rem 0.45rem;
+  cursor: pointer;
+}
+
+.cadu-anim-panel__role-chip.is-active {
+  background: rgba(225, 85, 108, 0.18);
+  border-color: rgba(225, 85, 108, 0.45);
+}
+
+.cadu-anim-panel__assign {
+  margin-top: 0.55rem;
+  padding-top: 0.55rem;
+  border-top: 1px solid rgba(92, 45, 58, 0.08);
+}
+
+.cadu-anim-panel__assign-label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+.cadu-anim-panel__btn.has-role {
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+  line-height: 1.15;
+}
+
+.cadu-anim-panel__btn-role {
+  font-size: 0.58rem;
+  font-weight: 600;
+  opacity: 0.72;
+}
+
+@media (max-width: 720px) {
+  .cadu-anim-panel {
+    left: 0.65rem;
+    right: 0.65rem;
+    width: auto;
+    bottom: 5rem;
+  }
+
+  .cadu-anim-panel__grid {
+    grid-template-columns: 1fr;
+  }
+}

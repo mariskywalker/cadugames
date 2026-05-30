@@ -1,0 +1,230 @@
+.cadu-app--raw-clips .cadu-app__ui {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 600;
+  pointer-events: none;
+}
+
+.cadu-app--raw-clips .cadu-app__ui > * {
+  pointer-events: auto;
+}
+
+.cadu-clip-tester {
+  position: fixed;
+  inset: 0;
+  top: var(--cadu-topbar-height, 3.25rem);
+  z-index: 500;
+  display: grid;
+  grid-template-columns: min(22rem, 42vw) 1fr;
+  background: #f5f2ef;
+  color: #3d2a32;
+}
+
+.cadu-clip-tester__panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-right: 1px solid rgba(61, 42, 50, 0.12);
+  background: rgba(255, 252, 250, 0.98);
+}
+
+.cadu-clip-tester__head {
+  padding: 1rem 1rem 0.75rem;
+  border-bottom: 1px solid rgba(61, 42, 50, 0.08);
+}
+
+.cadu-clip-tester__title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.cadu-clip-tester__hint {
+  margin: 0.35rem 0 0;
+  font-size: 0.72rem;
+  opacity: 0.7;
+}
+
+.cadu-clip-tester__list {
+  list-style: none;
+  margin: 0;
+  padding: 0.65rem;
+  overflow: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.cadu-clip-tester__btn {
+  width: 100%;
+  border: 1px solid rgba(61, 42, 50, 0.14);
+  border-radius: 0.55rem;
+  background: #fff;
+  color: inherit;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-align: left;
+  padding: 0.55rem 0.65rem;
+  cursor: pointer;
+  word-break: break-all;
+}
+
+.cadu-clip-tester__btn:hover {
+  border-color: rgba(225, 85, 108, 0.45);
+}
+
+.cadu-clip-tester__section {
+  margin: 0.75rem 0 0.35rem;
+  padding: 0 0.65rem;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.65;
+}
+
+.cadu-clip-tester__warn {
+  margin: 0 0.65rem 0.5rem;
+  padding: 0.45rem 0.55rem;
+  font-size: 0.68rem;
+  color: #b42318;
+  background: rgba(180, 35, 24, 0.08);
+  border-radius: 8px;
+}
+
+.cadu-clip-tester__edit-list {
+  list-style: none;
+  margin: 0;
+  padding: 0 0.65rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cadu-clip-tester__edit-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+}
+
+.cadu-clip-tester__play {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  border: 1px solid rgba(61, 42, 50, 0.14);
+  background: #fff;
+  cursor: pointer;
+  font-size: 0.62rem;
+  padding: 0;
+}
+
+.cadu-clip-tester__play.is-active {
+  background: linear-gradient(135deg, #e1556c, #ffa0a8);
+  border-color: transparent;
+  color: #fff;
+}
+
+.cadu-clip-tester__edit-fields {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.cadu-clip-tester__edit-file {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.62rem;
+  opacity: 0.72;
+  word-break: break-all;
+}
+
+.cadu-clip-tester__edit-input {
+  width: 100%;
+  border: 1px solid rgba(61, 42, 50, 0.18);
+  border-radius: 8px;
+  padding: 0.38rem 0.5rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.72rem;
+}
+
+.cadu-clip-tester__edit-actions {
+  display: flex;
+  gap: 0.45rem;
+  padding: 0.55rem 0.65rem 0;
+}
+
+.cadu-clip-tester__action {
+  border: 1px solid rgba(61, 42, 50, 0.14);
+  border-radius: 999px;
+  background: #fff;
+  font-size: 0.68rem;
+  font-weight: 650;
+  padding: 0.35rem 0.65rem;
+  cursor: pointer;
+}
+
+.cadu-clip-tester__empty {
+  margin: 0;
+  padding: 0 0.65rem;
+  font-size: 0.72rem;
+  opacity: 0.65;
+}
+
+.cadu-clip-tester__list--raw .cadu-clip-tester__btn--raw {
+  border-style: dashed;
+  font-size: 0.66rem;
+}
+
+.cadu-clip-tester__btn--unmapped {
+  border-style: dashed;
+  opacity: 0.85;
+}
+
+.cadu-clip-tester__btn:disabled {
+  opacity: 0.45;
+  cursor: wait;
+}
+
+.cadu-clip-tester__btn.is-active {
+  background: linear-gradient(135deg, #e1556c, #ffa0a8);
+  border-color: transparent;
+  color: #fff;
+}
+
+.cadu-clip-tester__status {
+  margin: 0;
+  padding: 0.65rem 1rem 0.85rem;
+  font-size: 0.72rem;
+  border-top: 1px solid rgba(61, 42, 50, 0.08);
+}
+
+.cadu-clip-tester__status code {
+  font-size: 0.68rem;
+}
+
+.cadu-clip-tester__viewport {
+  min-height: 0;
+  min-width: 0;
+}
+
+.cadu-clip-tester__viewport canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+@media (max-width: 720px) {
+  .cadu-clip-tester {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(12rem, 38vh) 1fr;
+  }
+
+  .cadu-clip-tester__panel {
+    border-right: none;
+    border-bottom: 1px solid rgba(61, 42, 50, 0.12);
+  }
+}
