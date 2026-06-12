@@ -1,0 +1,203 @@
+.cadu-anim-debug {
+  position: fixed;
+  right: 1rem;
+  bottom: 5.5rem;
+  z-index: 140;
+  width: min(22rem, calc(100vw - 2rem));
+  pointer-events: auto;
+  border-radius: 1rem;
+  background: rgba(18, 24, 38, 0.94);
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.35);
+  color: #e2e8f0;
+  backdrop-filter: blur(10px);
+}
+
+.cadu-anim-debug.is-collapsed {
+  width: auto;
+  min-width: 11rem;
+}
+
+.cadu-anim-debug__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.65rem 0.85rem 0.55rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.cadu-anim-debug__title {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.cadu-anim-debug__toggle {
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.cadu-anim-debug__body {
+  padding: 0.65rem 0.85rem 0.85rem;
+  max-height: min(58vh, 32rem);
+  overflow: auto;
+}
+
+.cadu-anim-debug__hint {
+  margin: 0 0 0.55rem;
+  font-size: 0.68rem;
+  opacity: 0.72;
+}
+
+.cadu-anim-debug__error {
+  margin: 0 0 0.55rem;
+  padding: 0.45rem 0.55rem;
+  border-radius: 8px;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  font-size: 0.68rem;
+  color: #fecaca;
+}
+
+.cadu-anim-debug__status {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.45rem;
+  margin: 0 0 0.65rem;
+  font-size: 0.68rem;
+}
+
+.cadu-anim-debug__status dt {
+  opacity: 0.65;
+  font-weight: 600;
+}
+
+.cadu-anim-debug__status dd {
+  margin: 0.1rem 0 0;
+  font-family: ui-monospace, monospace;
+  word-break: break-all;
+}
+
+.cadu-anim-debug__table-wrap {
+  overflow-x: auto;
+  margin-bottom: 0.75rem;
+}
+
+.cadu-anim-debug__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.65rem;
+}
+
+.cadu-anim-debug__table th,
+.cadu-anim-debug__table td {
+  padding: 0.35rem 0.3rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.cadu-anim-debug__table tr.is-missing {
+  background: rgba(239, 68, 68, 0.12);
+  color: #fecaca;
+}
+
+.cadu-anim-debug__table code {
+  font-size: 0.62rem;
+}
+
+.cadu-anim-debug__subtitle {
+  margin: 0 0 0.4rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.cadu-anim-debug__glb-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.cadu-anim-debug__glb-list li {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 0.35rem;
+  align-items: center;
+  font-size: 0.65rem;
+}
+
+.cadu-anim-debug__glb-list code {
+  opacity: 0.85;
+}
+
+.cadu-anim-debug__play {
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  color: inherit;
+  cursor: pointer;
+  font-size: 0.62rem;
+  padding: 0.2rem 0.4rem;
+}
+
+.cadu-anim-debug__play:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.cadu-anim-debug__select {
+  width: 100%;
+  max-width: 11rem;
+  font-size: 0.62rem;
+  font-family: ui-monospace, monospace;
+  background: rgba(255, 255, 255, 0.08);
+  color: inherit;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 4px;
+  padding: 0.15rem 0.2rem;
+}
+
+.cadu-anim-debug__override-tag {
+  display: block;
+  font-size: 0.55rem;
+  color: #fbbf24;
+  margin-top: 0.15rem;
+}
+
+.cadu-anim-debug__reset {
+  margin-bottom: 0.75rem;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font-size: 0.65rem;
+  padding: 0.3rem 0.55rem;
+  cursor: pointer;
+}
+
+.cadu-anim-debug__clip-id {
+  word-break: break-all;
+}
+
+.cadu-anim-debug__clip-roles {
+  font-size: 0.58rem;
+  opacity: 0.75;
+  white-space: nowrap;
+}
+
+.cadu-anim-panel__error {
+  margin: 0 0 0.55rem;
+  padding: 0.45rem 0.55rem;
+  border-radius: 8px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.28);
+  font-size: 0.68rem;
+  color: #b91c1c;
+}

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7dd3fc"/>
+      <stop offset="45%" stop-color="#bae6fd"/>
+      <stop offset="100%" stop-color="#e0f2fe"/>
+    </linearGradient>
+    <linearGradient id="sand" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fde68a"/>
+      <stop offset="100%" stop-color="#fbbf24"/>
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#sky)"/>
+  <!-- clouds -->
+  <ellipse cx="420" cy="180" rx="140" ry="48" fill="#fff" opacity="0.85"/>
+  <ellipse cx="520" cy="200" rx="100" ry="40" fill="#fff" opacity="0.75"/>
+  <ellipse cx="1380" cy="140" rx="160" ry="52" fill="#fff" opacity="0.8"/>
+  <!-- distant hills -->
+  <path d="M0 520 Q480 380 960 460 T1920 420 V1080 H0Z" fill="#93c5fd" opacity="0.5"/>
+  <path d="M0 580 Q640 480 1280 540 T1920 500 V1080 H0Z" fill="#60a5fa" opacity="0.35"/>
+  <!-- sand / beach -->
+  <path d="M0 680 Q960 620 1920 700 V1080 H0Z" fill="url(#sand)"/>
+  <!-- soft room hint (replace with your illustration) -->
+  <ellipse cx="960" cy="720" rx="520" ry="120" fill="#cbd5e1" opacity="0.35"/>
+  <text x="960" y="1020" text-anchor="middle" fill="#475569" font-family="system-ui,sans-serif" font-size="28" opacity="0.6">Replace: background.png / .webp</text>
+</svg>

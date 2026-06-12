@@ -1,0 +1,16 @@
+{
+  "hotspotPosition": [3.71, 1.22, 3.78],
+  "interactionPoint": [2.85, 0, 4.95],
+  "faceTarget": [3.71, 1.35, 3.78],
+  "animationAnchor": {
+    "position": [3.15, 0, 4.35],
+    "rotation": [0, -0.72, 0]
+  },
+  "animationSequence": [
+    "barJumpHang",
+    "barHang",
+    "barClimb",
+    "barFall",
+    "idle"
+  ]
+}
