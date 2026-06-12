@@ -151,7 +151,10 @@ function ValeFlowerInstanceBody({
         axis,
       }
       if (axis === 'depth') onDepthDrag()
-      e.target.setPointerCapture(e.pointerId)
+      const target = e.target
+      if (target && 'setPointerCapture' in target) {
+        ;(target as Element).setPointerCapture(e.pointerId)
+      }
     },
     [editorActive, intersectGround, onDepthDrag, onSelect, placement.position],
   )
@@ -194,8 +197,12 @@ function ValeFlowerInstanceBody({
 
   const handlePointerUp = useCallback((e: ThreeEvent<PointerEvent>) => {
     dragRef.current = null
-    if (e.target.hasPointerCapture(e.pointerId)) {
-      e.target.releasePointerCapture(e.pointerId)
+    const target = e.target
+    if (target && 'hasPointerCapture' in target && 'releasePointerCapture' in target) {
+      const el = target as Element
+      if (el.hasPointerCapture(e.pointerId)) {
+        el.releasePointerCapture(e.pointerId)
+      }
     }
   }, [])
 

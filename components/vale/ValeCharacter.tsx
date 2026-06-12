@@ -130,7 +130,7 @@ export function ValeCharacter() {
       if (!mesh?.isMesh) return
       mesh.castShadow = !VALE_HERO_MODE
       mesh.receiveShadow = !VALE_HERO_MODE
-      mesh.fog = false
+      ;(mesh as THREE.Object3D & { fog?: boolean }).fog = false
       mesh.renderOrder = 14
       const original = mesh.material
       const materials = Array.isArray(original) ? original : [original]

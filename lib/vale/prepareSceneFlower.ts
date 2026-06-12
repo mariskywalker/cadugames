@@ -14,7 +14,7 @@ function applyCelMesh(
 ) {
   mesh.castShadow = false
   mesh.receiveShadow = false
-  mesh.fog = false
+  ;(mesh as THREE.Object3D & { fog?: boolean }).fog = false
   mesh.renderOrder = 12
 
   const original = mesh.material

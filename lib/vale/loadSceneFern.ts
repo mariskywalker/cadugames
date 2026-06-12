@@ -31,7 +31,12 @@ export function preloadSceneFern() {
 
 /** Loader singleton para useLoader — chave fixa, URL ignorada. */
 export class ValeFernObjLoader extends THREE.Loader<THREE.Group> {
-  load(_url: string, onLoad: (group: THREE.Group) => void, _onProgress?, onError?) {
+  load(
+    _url: string,
+    onLoad: (group: THREE.Group) => void,
+    _onProgress?: (event: ProgressEvent<EventTarget>) => void,
+    onError?: (err: unknown) => void,
+  ) {
     preloadSceneFern()
       .then(onLoad)
       .catch((err) => onError?.(err))

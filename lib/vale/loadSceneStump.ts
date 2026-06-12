@@ -32,7 +32,12 @@ export function preloadSceneStump() {
 
 /** Loader singleton para useLoader — chave fixa, URL ignorada. */
 export class ValeStumpObjLoader extends THREE.Loader<THREE.Group> {
-  load(_url: string, onLoad: (group: THREE.Group) => void, _onProgress?, onError?) {
+  load(
+    _url: string,
+    onLoad: (group: THREE.Group) => void,
+    _onProgress?: (event: ProgressEvent<EventTarget>) => void,
+    onError?: (err: unknown) => void,
+  ) {
     preloadSceneStump()
       .then(onLoad)
       .catch((err) => onError?.(err))
