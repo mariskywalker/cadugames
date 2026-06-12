@@ -4,7 +4,6 @@ import { useGLTF } from '@react-three/drei'
 import { useLoader } from '@react-three/fiber'
 import type { Object3D } from 'three'
 import { ValeFernObjLoader, FERN_LOADER_KEY } from '@/lib/vale/loadSceneFern'
-import { ValeLilacObjLoader, LILAC_LOADER_KEY } from '@/lib/vale/loadSceneLilac'
 import { ValeStumpObjLoader, STUMP_LOADER_KEY } from '@/lib/vale/loadSceneStump'
 import { VALE_FLOWER_ASSETS } from '@/lib/vale/sceneFlowerAssets'
 
@@ -18,7 +17,8 @@ export function useFernFlowerSource(): Object3D {
 }
 
 export function useLilacFlowerSource(): Object3D {
-  return useLoader(ValeLilacObjLoader, LILAC_LOADER_KEY)
+  const { scene } = useGLTF(VALE_FLOWER_ASSETS.lilac.url)
+  return scene
 }
 
 export function useStumpFlowerSource(): Object3D {

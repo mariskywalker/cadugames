@@ -8,7 +8,8 @@ export const VALE_FLOWER_ASSETS = {
     type: 'obj' as const,
   },
   lilac: {
-    type: 'obj' as const,
+    type: 'gltf' as const,
+    url: '/models/cenario/two-pink-flowers-2026-02-09-00-22-32-utc/Magnolia.glb',
   },
   stump: {
     type: 'obj' as const,

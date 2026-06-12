@@ -7,3 +7,7 @@ dist
 archive-assets-local/
 .DS_Store
 tsconfig.tsbuildinfo
+
+# Arquivos locais grandes — acima do limite de 100MB do GitHub
+public/models/**/*.zip
+public/models/cenario/lilac-bush-syringa-vulgaris-with-blossoms-and-gr-2026-02-06-05-48-57-utc/[OBJ] Lilac_Natural_Group_001/Lilac_Natural_Group_001.obj
