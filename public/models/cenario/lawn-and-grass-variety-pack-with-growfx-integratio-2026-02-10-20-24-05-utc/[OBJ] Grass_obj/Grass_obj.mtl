@@ -1,0 +1,158 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# File Created: 21.09.2018 12:46:26
+
+newmtl grass_blade_1
+	Ns 50.0000
+	Ni 1.0000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.4267 0.4267 0.4267
+	Ks 0.9224 0.9224 0.9224
+	Ke 0.0000 0.0000 0.0000
+	map_Ka grass_stb.tga
+	map_Kd grass_stb.tga
+
+newmtl grass_blade_2
+	Ns 50.0000
+	Ni 1.5200
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.4267 0.4267 0.4267
+	Ks 1.0000 1.0000 1.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka grass_stb.tga
+	map_Kd grass_stb.tga
+
+newmtl grass_blade_3
+	Ns 50.0000
+	Ni 1.5200
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.4250 0.4250 0.4250
+	Ks 1.0000 1.0000 1.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka grass_leaf_002.jpg
+	map_Kd grass_leaf_002.jpg
+
+newmtl grass_blade_7
+	Ns 35.7143
+	Ni 1.5200
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.4250 0.4250 0.4250
+	Ks 0.6241 0.6241 0.6241
+	Ke 0.0000 0.0000 0.0000
+	map_Ka grass_leaf_005.jpg
+	map_Kd grass_leaf_005.jpg
+
+newmtl grass_blade_8
+	Ns 35.7143
+	Ni 1.5200
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.4250 0.4250 0.4250
+	Ks 0.6241 0.6241 0.6241
+	Ke 0.0000 0.0000 0.0000
+	map_Ka grass_leaf_006.jpg
+	map_Kd grass_leaf_006.jpg
+
+newmtl grass_blade_9
+	Ns 35.7143
+	Ni 1.5200
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.4250 0.4250 0.4250
+	Ks 0.6241 0.6241 0.6241
+	Ke 0.0000 0.0000 0.0000
+	map_Ka grass_leaf_009.jpg
+	map_Kd grass_leaf_009.jpg
+
+newmtl grass_blade_10
+	Ns 35.7143
+	Ni 1.5200
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.4250 0.4250 0.4250
+	Ks 0.6241 0.6241 0.6241
+	Ke 0.0000 0.0000 0.0000
+	map_Ka grass_leaf_010.jpg
+	map_Kd grass_leaf_010.jpg
+
+newmtl grass_blade_5
+	Ns 50.0000
+	Ni 1.5200
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.4250 0.4250 0.4250
+	Ks 1.0000 1.0000 1.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka grass_leaf.jpg
+	map_Kd grass_leaf.jpg
+
+newmtl grass_blade_4
+	Ns 50.0000
+	Ni 1.5200
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.4250 0.4250 0.4250
+	Ks 1.0000 1.0000 1.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka grass_leaf_003.jpg
+	map_Kd grass_leaf_003.jpg
+
+newmtl grass_blade_6
+	Ns 35.7143
+	Ni 1.5200
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.4250 0.4250 0.4250
+	Ks 0.7921 0.7921 0.7921
+	Ke 0.0000 0.0000 0.0000
+	map_Ka grass_leaf_004.jpg
+	map_Kd grass_leaf_004.jpg
+
+newmtl ground
+	Ns 71.4286
+	Ni 1.5200
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5000 0.5000 0.5000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka Ground_diffuse.jpg
+	map_Kd Ground_diffuse.jpg
+	map_bump Ground_diffuse_bump.jpg
+	bump Ground_diffuse_bump.jpg

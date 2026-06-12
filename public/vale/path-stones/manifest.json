@@ -1,0 +1,13 @@
+{
+  "pack": "vale-path-stones",
+  "description": "Pedras individuais — um asset por node de progressão",
+  "usage": "Posicionamento absoluto manual em stoneNodes.ts",
+  "assets": [
+    { "id": "small", "file": "stone-small.svg", "label": "Pequena", "width": 64, "height": 56 },
+    { "id": "medium", "file": "stone-medium.svg", "label": "Média", "width": 80, "height": 68 },
+    { "id": "large", "file": "stone-large.svg", "label": "Grande", "width": 96, "height": 80 },
+    { "id": "oval", "file": "stone-oval.svg", "label": "Oval", "width": 88, "height": 64 },
+    { "id": "circular", "file": "stone-circular.svg", "label": "Circular", "width": 84, "height": 76 },
+    { "id": "checkpoint", "file": "stone-checkpoint.svg", "label": "Checkpoint", "width": 108, "height": 92 }
+  ]
+}

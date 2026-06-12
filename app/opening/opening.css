@@ -1,0 +1,227 @@
+.opening-page {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #fff2ec;
+}
+
+.opening-page__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.opening-page__vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(ellipse 85% 70% at 50% 45%, transparent 42%, rgba(120, 72, 64, 0.18) 100%);
+}
+
+.opening-scene__host {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+}
+
+.opening-scene__canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+.opening-page__error {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.5rem;
+  text-align: center;
+  color: #2d3142;
+  background: rgba(255, 242, 236, 0.92);
+}
+
+.opening-page__error-detail {
+  margin: 0;
+  font-size: 0.85rem;
+  color: rgba(45, 49, 66, 0.65);
+  max-width: 28rem;
+}
+
+.opening-page__splash {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+}
+
+.opening-page__pulse {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow: 0 0 0 0 rgba(232, 168, 172, 0.45);
+  animation: opening-pulse 1.6s ease-in-out infinite;
+}
+
+.opening-page__hint {
+  margin: 0;
+  font-size: 0.95rem;
+  color: rgba(45, 49, 66, 0.72);
+  letter-spacing: 0.02em;
+}
+
+.opening-page__footer {
+  position: absolute;
+  bottom: 1.25rem;
+  left: 50%;
+  z-index: 4;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  width: min(92vw, 640px);
+  pointer-events: none;
+}
+
+.opening-page__footer .opening-page__cta,
+.opening-page__footer .opening-page__choice {
+  pointer-events: auto;
+}
+
+/* ─── Fala do Cadu (topo) ─── */
+.opening-page__speech {
+  position: absolute;
+  top: max(1.25rem, env(safe-area-inset-top));
+  left: 50%;
+  z-index: 4;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.opening-page__speech-text {
+  margin: 0;
+  padding: 0.7rem 1.35rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+  color: #2d3142;
+  font-size: clamp(0.95rem, 2vw, 1.15rem);
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(45, 49, 66, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* ─── Cards de escolha ─── */
+.opening-page__choices {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.opening-page__choice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  min-width: 8.5rem;
+  padding: 0.8rem 1rem;
+  border-radius: 1.35rem;
+  background: rgba(255, 255, 255, 0.82);
+  color: #2d3142;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.82rem;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(45, 49, 66, 0.12);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+}
+
+.opening-page__choice:hover {
+  transform: translateY(-3px);
+  background: #fff;
+  box-shadow: 0 12px 30px rgba(45, 49, 66, 0.16);
+}
+
+.opening-page__choice-emoji {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.opening-page__choice-label {
+  line-height: 1.2;
+}
+
+@media (max-width: 560px) {
+  .opening-page__choices {
+    gap: 0.45rem;
+  }
+
+  .opening-page__choice {
+    min-width: 0;
+    flex: 1 1 30%;
+    padding: 0.65rem 0.5rem;
+    font-size: 0.72rem;
+  }
+}
+
+.opening-page__title {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: rgba(45, 49, 66, 0.88);
+  text-shadow: 0 1px 12px rgba(255, 255, 255, 0.6);
+}
+
+.opening-page__subtitle {
+  margin: 0;
+  font-size: 0.9rem;
+  color: rgba(45, 49, 66, 0.62);
+}
+
+.opening-page__cta {
+  margin-top: 0.25rem;
+  padding: 0.65rem 1.25rem;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  color: #2d3142;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(45, 49, 66, 0.12);
+  backdrop-filter: blur(8px);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.opening-page__cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 22px rgba(45, 49, 66, 0.16);
+}
+
+@keyframes opening-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(232, 168, 172, 0.45);
+  }
+  50% {
+    transform: scale(1.06);
+    box-shadow: 0 0 0 14px rgba(232, 168, 172, 0);
+  }
+}

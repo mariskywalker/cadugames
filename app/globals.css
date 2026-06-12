@@ -1,0 +1,1007 @@
+@import 'tailwindcss';
+@import '../lib/theme.css';
+
+@theme {
+  --color-cadu-bg: #fff5f8;
+  --color-cadu-cream: #fff8f0;
+  --color-cadu-pink: #ffd6e8;
+  --color-cadu-peach: #ffcab0;
+  --color-cadu-coral: #ff8f73;
+  --color-cadu-mint: #c9f0c2;
+  --color-cadu-sky: #b8e8ff;
+  --color-cadu-lavender: #e8d4ff;
+  --color-cadu-honey: #ffd88a;
+  --color-cadu-ink: #3d2c3a;
+  --color-cadu-muted: #8b7386;
+  --shadow-cadu: 0 8px 24px rgb(255 143 115 / 0.12);
+  --shadow-cadu-lg: 0 16px 40px rgb(255 143 115 / 0.16);
+  --font-sans: ui-rounded, 'SF Pro Rounded', 'Segoe UI', system-ui, sans-serif;
+  --radius-cadu-sm: 1rem;
+  --radius-cadu-md: 1.25rem;
+  --radius-cadu-lg: 1.5rem;
+  --radius-cadu-pill: 2rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: var(--color-cadu-bg);
+  color: var(--color-cadu-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cadu-gradient-bg {
+  background: linear-gradient(
+    165deg,
+    var(--color-cadu-bg) 0%,
+    var(--color-cadu-cream) 45%,
+    var(--color-cadu-pink) 100%
+  );
+}
+
+.cadu-blob-pink {
+  background: color-mix(in srgb, var(--color-cadu-pink) 35%, transparent);
+}
+
+.cadu-blob-peach {
+  background: color-mix(in srgb, var(--color-cadu-peach) 40%, transparent);
+}
+
+.cadu-blob-lavender {
+  background: color-mix(in srgb, var(--color-cadu-lavender) 30%, transparent);
+}
+
+/* Modo responsável — fundo dreamscape (ilhas flutuantes low-poly) */
+.cadu-parent-bg {
+  position: relative;
+  min-height: 100dvh;
+  background: linear-gradient(160deg, #c9a7f5 0%, #e6a3d6 45%, #f5b8c4 75%, #f7c9a8 100%);
+}
+
+/* Jornada da família — fundo mais claro e arejado */
+.cadu-parent-bg-light {
+  background: linear-gradient(165deg, #faf4f8 0%, #f8f0f6 35%, #fdf3ee 70%, #f9f8fc 100%);
+}
+
+.cadu-dreamscape-light .cadu-dreamscape-img {
+  opacity: 0.28;
+}
+
+.cadu-dreamscape-tint-light {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.82) 0%, rgb(255 253 251 / 0.68) 45%, rgb(253 250 255 / 0.74) 100%),
+    radial-gradient(ellipse 80% 50% at 50% 20%, rgb(255 255 255 / 0.55), transparent 70%);
+  pointer-events: none;
+}
+
+/* Palco com a mesma proporção da arte (3:2), cobrindo a viewport */
+.cadu-dreamscape {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.cadu-dreamscape-stage {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max(100vw, 150vh);
+  aspect-ratio: 3 / 2;
+}
+
+.cadu-dreamscape-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Overlay sutil — garante leitura dos cards glass sobre a arte */
+.cadu-dreamscape-tint {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgb(123 92 255 / 0.16) 0%, transparent 26%),
+    linear-gradient(0deg, rgb(247 147 100 / 0.2) 0%, transparent 34%),
+    radial-gradient(ellipse 90% 60% at 50% 40%, transparent, rgb(80 40 120 / 0.1));
+  pointer-events: none;
+}
+
+/* Cachoeiras animadas sobre as ilhas */
+.cadu-waterfall {
+  position: absolute;
+  border-radius: 999px;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgb(255 255 255 / 0) 0px,
+    rgb(255 255 255 / 0.55) 4px,
+    rgb(186 230 253 / 0.65) 8px,
+    rgb(255 255 255 / 0) 15px
+  );
+  background-size: 100% 16px;
+  filter: blur(1px);
+  opacity: 0.7;
+  mix-blend-mode: screen;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 78%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 78%, transparent);
+  animation: cadu-waterfall-flow 0.7s linear infinite;
+}
+
+@keyframes cadu-waterfall-flow {
+  from {
+    background-position-y: 0;
+  }
+  to {
+    background-position-y: 16px;
+  }
+}
+
+.cadu-waterfall-mist {
+  position: absolute;
+  left: 50%;
+  bottom: -7px;
+  width: 26px;
+  height: 14px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgb(255 255 255 / 0.5), transparent 70%);
+  filter: blur(3px);
+  animation: cadu-mist-pulse 2.2s ease-in-out infinite;
+}
+
+@keyframes cadu-mist-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    opacity: 0.75;
+    transform: translateX(-50%) scale(1.25);
+  }
+}
+
+/* ============================================================
+ * CADU LIFE — mapa de ilhas flutuantes
+ * ============================================================ */
+.cadu-life-shell {
+  position: relative;
+  width: 100%;
+  max-width: none;
+  min-height: 100dvh;
+  background: #fff7fa;
+}
+
+.journey-page {
+  position: relative;
+  width: 100%;
+  max-width: none;
+  min-height: 100vh;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255, 221, 235, 0.9), transparent 32%),
+    radial-gradient(circle at 80% 30%, rgba(210, 235, 255, 0.75), transparent 34%),
+    radial-gradient(circle at 50% 80%, rgba(255, 244, 210, 0.75), transparent 36%),
+    linear-gradient(180deg, #fff7fa 0%, #f4f8ff 58%, #fff3f5 100%);
+}
+
+.journey-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.75) 0 2px, transparent 3px);
+  background-size: 42px 42px;
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.journey-sky-background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.journey-cloud {
+  position: absolute;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.62);
+  filter: blur(10px);
+}
+
+.journey-cloud-1 {
+  top: 12%;
+  left: -8%;
+  width: 220px;
+  height: 72px;
+  animation: journey-cloud-drift 28s ease-in-out infinite;
+}
+
+.journey-cloud-2 {
+  top: 22%;
+  right: -6%;
+  width: 260px;
+  height: 84px;
+  animation: journey-cloud-drift 34s ease-in-out infinite reverse;
+}
+
+.journey-cloud-3 {
+  top: 38%;
+  left: 18%;
+  width: 180px;
+  height: 58px;
+  opacity: 0.7;
+  animation: journey-cloud-drift 40s ease-in-out infinite;
+}
+
+.journey-mist {
+  position: absolute;
+  inset: auto 0 0;
+  height: 42%;
+  background: linear-gradient(
+    to top,
+    rgba(255, 243, 245, 0.88) 0%,
+    rgba(255, 243, 245, 0.35) 45%,
+    transparent 100%
+  );
+}
+
+.journey-content {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  max-width: none;
+  padding: 24px 20px 0;
+}
+
+.floating-map-layer {
+  position: relative;
+  z-index: 2;
+  min-height: 62vh;
+  margin-top: 8px;
+  padding-bottom: 120px;
+}
+
+.floating-island {
+  position: absolute;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 180ms ease, filter 180ms ease, opacity 180ms ease;
+}
+
+.floating-island-art {
+  width: 100%;
+  line-height: 0;
+}
+
+.floating-island-art svg,
+.floating-island-art img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.floating-island--available {
+  cursor: pointer;
+  filter: drop-shadow(0 24px 40px rgba(146, 92, 117, 0.18));
+  animation: island-float 4.8s ease-in-out infinite;
+}
+
+.floating-island--available::before {
+  content: '';
+  position: absolute;
+  top: 18%;
+  left: 50%;
+  width: 88%;
+  height: 58%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 186, 214, 0.42) 0%, transparent 72%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.floating-island--available:hover {
+  animation: none;
+  transform: translateX(-50%) scale(1.03);
+  filter: drop-shadow(0 28px 50px rgba(146, 92, 117, 0.24));
+}
+
+.floating-island--available:active {
+  transform: translateX(-50%) scale(0.99);
+}
+
+.floating-island--locked {
+  opacity: 0.42;
+  filter: drop-shadow(0 16px 28px rgba(120, 100, 140, 0.1)) saturate(0.75);
+  pointer-events: none;
+}
+
+.island-label {
+  margin-top: 10px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #57364a;
+  white-space: nowrap;
+  box-shadow: 0 8px 24px rgba(146, 92, 117, 0.08);
+}
+
+.floating-island--locked .island-label {
+  opacity: 0.85;
+}
+
+@keyframes island-float {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-8px);
+  }
+}
+
+@keyframes journey-cloud-drift {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(18px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .floating-island--available,
+  .journey-cloud,
+  .cadu-waterfall,
+  .cadu-waterfall-mist {
+    animation: none;
+  }
+}
+
+/* Vale das Palavras — mini mundo vivo */
+.vale-hub,
+.vale-world {
+  position: relative;
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.vale-hub-loading {
+  min-height: 18rem;
+  border-radius: 24px;
+  background: linear-gradient(180deg, #fff5f9 0%, #f3ecff 50%, #edf8ef 100%);
+}
+
+.vale-world-whisper {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 0.76rem;
+  line-height: 1.45;
+  color: rgba(100, 80, 95, 0.75);
+  padding: 0 12px;
+  font-style: italic;
+}
+
+/* Palco — sem borda de card */
+.vale-world-stage {
+  position: relative;
+  width: 100%;
+  height: 420px;
+  overflow: hidden;
+  border-radius: 28px;
+  background: transparent;
+}
+
+/* Atmosfera */
+.vale-living-atmosphere {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.vale-living-sky {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, #e8f4ff 0%, #fdf0f8 38%, #f5f0ff 62%, #e8f5e9 100%);
+}
+
+.vale-living-haze {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 90% 70% at 50% 55%, transparent 40%, rgba(255, 252, 253, 0.25) 100%);
+}
+
+.vale-living-cloud {
+  position: absolute;
+  height: 28px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  filter: blur(6px);
+  box-shadow:
+    24px 4px 0 rgba(255, 255, 255, 0.55),
+    -18px 6px 0 rgba(255, 255, 255, 0.4);
+}
+
+.vale-living-ground {
+  position: absolute;
+  left: 50%;
+  bottom: 8%;
+  width: 88%;
+  height: 28%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(168, 210, 155, 0.55) 0%, rgba(168, 210, 155, 0) 72%);
+}
+
+.vale-living-island-glow {
+  position: absolute;
+  left: 50%;
+  bottom: 14%;
+  width: 70%;
+  height: 18%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(255, 200, 220, 0.2) 0%, transparent 70%);
+  animation: vale-island-glow 4s ease-in-out infinite;
+}
+
+.vale-living-scenery {
+  position: absolute;
+  left: 50%;
+  bottom: 6%;
+  width: 92%;
+  max-width: 400px;
+  height: auto;
+  transform: translateX(-50%);
+  opacity: 0.92;
+}
+
+.vale-flower-glow {
+  animation: vale-flower-pulse 3s ease-in-out infinite;
+}
+
+.vale-living-petals {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.vale-living-petal {
+  position: absolute;
+  border-radius: 50% 50% 50% 0;
+  background: linear-gradient(135deg, #ffc8dc 0%, #ffb0cc 50%, #f8a0c0 100%);
+  opacity: 0.7;
+  transform: rotate(45deg);
+  filter: blur(0.3px);
+}
+
+/* Diorama interativo */
+.vale-world-diorama {
+  --orbit-radius: 68px;
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: min(96%, 340px);
+  height: 86%;
+  max-height: 360px;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+.vale-fireflies {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.vale-firefly-lane {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+}
+
+.vale-firefly-lane--top {
+  height: var(--orbit-radius);
+  transform: translate(-50%, calc(-1 * var(--orbit-radius)));
+}
+
+.vale-firefly-lane--bottom {
+  height: var(--orbit-radius);
+  transform: translate(-50%, 0);
+}
+
+.vale-firefly-lane--left {
+  width: var(--orbit-radius);
+  transform: translate(calc(-1 * var(--orbit-radius)), -50%);
+}
+
+.vale-firefly-lane--right {
+  width: var(--orbit-radius);
+  transform: translate(0, -50%);
+}
+
+.vale-firefly {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(220, 255, 180, 0.9);
+  box-shadow: 0 0 8px rgba(200, 255, 150, 0.8), 0 0 14px rgba(255, 255, 200, 0.5);
+}
+
+.vale-firefly-lane--top .vale-firefly:nth-child(1) { left: 30%; top: 80%; }
+.vale-firefly-lane--top .vale-firefly:nth-child(2) { left: 55%; top: 40%; animation-delay: 0.5s; }
+.vale-firefly-lane--top .vale-firefly:nth-child(3) { left: 75%; top: 65%; animation-delay: 1s; }
+
+.vale-firefly-lane--bottom .vale-firefly:nth-child(1) { left: 40%; top: 20%; }
+.vale-firefly-lane--bottom .vale-firefly:nth-child(2) { left: 60%; top: 55%; }
+.vale-firefly-lane--bottom .vale-firefly:nth-child(3) { left: 25%; top: 70%; }
+
+.vale-firefly-lane--left .vale-firefly:nth-child(1) { left: 75%; top: 35%; }
+.vale-firefly-lane--left .vale-firefly:nth-child(2) { left: 40%; top: 60%; }
+.vale-firefly-lane--left .vale-firefly:nth-child(3) { left: 85%; top: 75%; }
+
+.vale-firefly-lane--right .vale-firefly:nth-child(1) { left: 20%; top: 45%; }
+.vale-firefly-lane--right .vale-firefly:nth-child(2) { left: 55%; top: 25%; }
+.vale-firefly-lane--right .vale-firefly:nth-child(3) { left: 35%; top: 70%; }
+
+.vale-firefly--lit {
+  background: rgba(255, 240, 180, 1);
+  box-shadow: 0 0 12px rgba(255, 230, 150, 1), 0 0 20px rgba(255, 200, 220, 0.6);
+}
+
+/* Casa sobre o cenário */
+.vale-world-house {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 84%;
+  height: 58%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  pointer-events: none;
+  transition: filter 400ms ease;
+}
+
+.vale-world-house--lit {
+  filter: drop-shadow(0 10px 32px rgba(255, 170, 200, 0.3));
+}
+
+.vale-world-house--awake {
+  animation: vale-house-awake-glow 2.6s ease-in-out infinite;
+}
+
+.vale-world-house .vale-world-scene {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  transition: filter 400ms ease;
+}
+.vale-world-house .vale-world-scene canvas,
+.vale-world-scene canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+  pointer-events: none;
+}
+
+.vale-house-touch {
+  position: absolute;
+  inset: 6% 10% 10% 10%;
+  z-index: 10;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+  pointer-events: auto;
+  border-radius: 40% 40% 35% 35%;
+}
+
+.vale-house-alive,
+.vale-house-window,
+.vale-house-door-pulse,
+.vale-house-chimney-smoke,
+.vale-living-atmosphere,
+.vale-fireflies,
+.vale-float-light-outer,
+.vale-float-light-mid,
+.vale-float-light-sparkle,
+.vale-story-tail,
+.vale-story-sparkle {
+  pointer-events: none;
+}
+
+.vale-house-alive {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+}
+
+.vale-house-window {
+  position: absolute;
+  top: 38%;
+  width: 12%;
+  height: 10%;
+  border-radius: 40%;
+  background: radial-gradient(circle, rgba(255, 230, 160, 0.9), rgba(255, 200, 120, 0.2));
+  box-shadow: 0 0 18px rgba(255, 210, 130, 0.75);
+  animation: vale-window-flicker 2.2s ease-in-out infinite;
+}
+
+.vale-house-window--left { left: 28%; }
+.vale-house-window--right { right: 28%; animation-delay: 0.6s; }
+
+.vale-house-door-pulse {
+  position: absolute;
+  left: 50%;
+  bottom: 18%;
+  width: 18%;
+  height: 22%;
+  transform: translateX(-50%);
+  border-radius: 50% 50% 40% 40%;
+  background: radial-gradient(circle, rgba(255, 180, 200, 0.4), transparent 70%);
+  animation: vale-door-pulse 1.8s ease-in-out infinite;
+}
+
+.vale-house-chimney-smoke {
+  position: absolute;
+  top: 18%;
+  left: 58%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.55);
+  filter: blur(2px);
+  animation: vale-smoke-rise 2.8s ease-in-out infinite;
+}
+
+.vale-house-chimney-smoke--2 {
+  left: 62%;
+  animation-delay: 1.2s;
+  width: 6px;
+  height: 6px;
+}
+
+/* Luzes flutuantes — não botões */
+.vale-float-light {
+  position: absolute;
+  z-index: 6;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  width: 80px;
+  pointer-events: auto;
+}
+
+.vale-float-light--top { left: 50%; top: calc(50% - var(--orbit-radius)); }
+.vale-float-light--bottom { left: 50%; top: calc(50% + var(--orbit-radius)); }
+.vale-float-light--left { left: calc(50% - var(--orbit-radius)); top: 50%; }
+.vale-float-light--right { left: calc(50% + var(--orbit-radius)); top: 50%; }
+
+.vale-float-light-outer {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  width: 44px;
+  height: 44px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 190, 220, 0.35), transparent 70%);
+  filter: blur(4px);
+}
+
+.vale-float-light-mid {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  width: 28px;
+  height: 28px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 220, 235, 0.6), transparent 72%);
+}
+
+.vale-float-light-core {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin-top: 10px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #fffef8 0%, rgba(255, 230, 245, 0.95) 45%, rgba(255, 180, 210, 0.5) 100%);
+  box-shadow:
+    0 0 16px rgba(255, 180, 210, 0.7),
+    0 0 32px rgba(255, 200, 230, 0.35);
+}
+
+.vale-float-light-emoji {
+  font-size: 0.7rem;
+  line-height: 1;
+  opacity: 0.85;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.8));
+}
+
+.vale-float-light-sparkle {
+  position: absolute;
+  top: 2px;
+  right: 22px;
+  font-size: 9px;
+  color: rgba(255, 180, 210, 0.9);
+}
+
+.vale-float-light-whisper {
+  margin-top: 4px;
+  max-width: 78px;
+  text-align: center;
+  font-size: 0.58rem;
+  font-weight: 500;
+  font-style: italic;
+  line-height: 1.1;
+  color: rgba(85, 65, 80, 0.82);
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.9);
+}
+
+.vale-float-light--current .vale-float-light-outer {
+  width: 56px;
+  height: 56px;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--vale-accent, #d98ba8) 45%, transparent),
+    transparent 70%
+  );
+}
+
+.vale-float-light--current .vale-float-light-core {
+  width: 26px;
+  height: 26px;
+  box-shadow:
+    0 0 22px color-mix(in srgb, var(--vale-accent, #d98ba8) 65%, transparent),
+    0 0 40px rgba(255, 200, 220, 0.45);
+}
+
+.vale-float-light--locked {
+  opacity: 0.5;
+}
+
+.vale-float-light--locked .vale-float-light-core {
+  box-shadow: 0 0 10px rgba(200, 190, 210, 0.3);
+}
+
+.vale-float-light--locked .vale-float-light-whisper {
+  color: rgba(120, 105, 115, 0.5);
+}
+
+/* Balão de história no mundo */
+.vale-story-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  background: rgba(255, 248, 252, 0.04);
+  border: none;
+  cursor: pointer;
+}
+
+.vale-story-balloon {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  z-index: 9;
+  width: min(calc(100% - 28px), 400px);
+  max-height: 25%;
+  padding: 12px 14px 14px;
+  transform: translateX(-50%);
+  border-radius: 22px;
+  background: rgba(255, 252, 248, 0.92);
+  border: 1px solid rgba(255, 225, 238, 0.8);
+  box-shadow: 0 10px 32px rgba(160, 130, 150, 0.12);
+  overflow-y: auto;
+}
+
+.vale-story-tail {
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  transform: translateX(-50%) rotate(45deg);
+  background: rgba(255, 252, 248, 0.92);
+  border-left: 1px solid rgba(255, 225, 238, 0.8);
+  border-top: 1px solid rgba(255, 225, 238, 0.8);
+}
+
+.vale-story-sparkle {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  font-size: 0.7rem;
+  opacity: 0.7;
+}
+
+.vale-story-close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  border: none;
+  background: transparent;
+  color: rgba(130, 110, 125, 0.5);
+  font-size: 0.72rem;
+  cursor: pointer;
+  padding: 2px 6px;
+}
+
+.vale-story-text {
+  margin: 0 18px 0 14px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #4a3542;
+}
+
+.vale-story-text--dormant {
+  font-weight: 500;
+  font-style: italic;
+  color: rgba(120, 100, 115, 0.78);
+}
+
+.vale-story-text--reply {
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+.vale-story-prompt {
+  margin: 5px 0 0 14px;
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: rgba(107, 85, 99, 0.8);
+}
+
+.vale-story-words {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+  padding-left: 4px;
+}
+
+.vale-story-word {
+  border: none;
+  background: rgba(255, 245, 250, 0.95);
+  color: #57364a;
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 7px 12px;
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgba(220, 150, 180, 0.1);
+  cursor: pointer;
+  transition: transform 140ms ease;
+}
+
+.vale-story-word:active {
+  transform: scale(0.97);
+}
+
+/* Compat: cena 3D */
+.vale-world-scene {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  transition: filter 400ms ease;
+}
+
+.vale-world-scene--active {
+  filter: saturate(1.06) brightness(1.04);
+}
+
+.vale-world-scene--responding {
+  filter: saturate(1.1) brightness(1.06) drop-shadow(0 0 20px rgba(255, 200, 140, 0.35));
+}
+
+@keyframes vale-island-glow {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+@keyframes vale-flower-pulse {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+@keyframes vale-house-awake-glow {
+  0%, 100% { filter: drop-shadow(0 10px 32px rgba(255, 170, 200, 0.3)); }
+  50% { filter: drop-shadow(0 14px 40px rgba(255, 200, 150, 0.45)); }
+}
+
+@keyframes vale-window-flicker {
+  0%, 100% { opacity: 0.65; }
+  50% { opacity: 1; }
+}
+
+@keyframes vale-door-pulse {
+  0%, 100% { opacity: 0.4; transform: translateX(-50%) scale(1); }
+  50% { opacity: 0.85; transform: translateX(-50%) scale(1.08); }
+}
+
+@keyframes vale-smoke-rise {
+  0% { opacity: 0; transform: translateY(0) scale(0.8); }
+  30% { opacity: 0.7; }
+  100% { opacity: 0; transform: translateY(-28px) scale(1.4); }
+}
+
+@media (max-width: 639px) {
+  .vale-world-stage {
+    height: 420px;
+  }
+
+  .vale-world-diorama {
+    --orbit-radius: 60px;
+    width: min(98%, 310px);
+  }
+
+  .vale-world-house {
+    width: 88%;
+    height: 54%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vale-living-petal,
+  .vale-living-cloud,
+  .vale-flower-glow,
+  .vale-living-island-glow,
+  .vale-world-house--awake,
+  .vale-house-window,
+  .vale-house-door-pulse,
+  .vale-house-chimney-smoke {
+    animation: none;
+  }
+}

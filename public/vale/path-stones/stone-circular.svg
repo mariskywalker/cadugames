@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 84 76" width="84" height="76">
+  <defs>
+    <linearGradient id="stoneTop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffd4c8"/>
+      <stop offset="45%" stop-color="#f5b0a0"/>
+      <stop offset="100%" stop-color="#e89890"/>
+    </linearGradient>
+    <linearGradient id="stoneSide" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#d88880"/>
+      <stop offset="100%" stop-color="#b87068"/>
+    </linearGradient>
+    <radialGradient id="grass" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#7ec85a"/>
+      <stop offset="70%" stop-color="#5aad42"/>
+      <stop offset="100%" stop-color="#3d8a30"/>
+    </radialGradient>
+    
+  </defs>
+  <ellipse cx="42" cy="48.1" rx="27.599999999999998" ry="9.9" fill="url(#grass)" opacity="0.95"/>
+  <ellipse cx="30" cy="46.1" rx="8.399999999999999" ry="4.4" fill="#6bc04a" opacity="0.7"/>
+  <ellipse cx="52.8" cy="47.1" rx="7.199999999999999" ry="3.96" fill="#72c850" opacity="0.65"/>
+  <circle cx="25.200000000000003" cy="45.1" r="2.2" fill="#ffb8c8"/>
+  <circle cx="25.200000000000003" cy="45.1" r="0.8" fill="#ffe880"/>
+  <circle cx="55.2" cy="48.1" r="1.8" fill="#ffc0d0"/>
+  <circle cx="55.2" cy="48.1" r="0.7" fill="#ffe880"/>
+  <circle cx="38.4" cy="50.1" r="1.5" fill="#ffb0c0"/>
+  <circle cx="38.4" cy="50.1" r="0.6" fill="#ffe880"/>
+  <ellipse cx="42" cy="42.95" rx="22.080000000000002" ry="6.5" fill="url(#stoneSide)" opacity="0.9"/>
+  <ellipse cx="42" cy="32" rx="24" ry="22" fill="url(#stoneTop)"/>
+  <ellipse cx="36" cy="28.7" rx="10.8" ry="7.699999999999999" fill="#ffe8e0" opacity="0.55"/>
+  <ellipse cx="49.2" cy="34.2" rx="6" ry="4.4" fill="#c87870" opacity="0.18"/>
+  
+  <path d="M37.2 29.8 Q40.8 33.1 43.92 35.3" stroke="#d89088" stroke-width="1.2" fill="none" opacity="0.45" stroke-linecap="round"/>
+  <path d="M45.6 27.6 Q48.72 32 44.88 36.4" stroke="#d08078" stroke-width="0.9" fill="none" opacity="0.35" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,2002 @@
+/* ─── Vale das Palavras — experiência 3D fullscreen ─── */
+
+.vale-page {
+  position: fixed;
+  inset: 0;
+  z-index: 50; /* acima da navbar (z-40) do AppShell */
+  overflow: hidden;
+  background: #d8e4f8;
+  outline: none;
+}
+
+.vale-page--hero {
+  overflow: visible;
+  /*
+   * Recorte de blur: spots da casa + faixa inferior (flores em primeiro plano).
+   * Névoa/cor cobrem a tela inteira.
+   */
+  --vale-focus-1-x: 63.4%;
+  --vale-focus-1-y: 56.2%;
+  --vale-focus-1-r: 5.9vmin;
+  --vale-focus-2-x: 73.4%;
+  --vale-focus-2-y: 45.4%;
+  --vale-focus-2-r: 9.5vmin;
+  --vale-focus-3-x: 80.8%;
+  --vale-focus-3-y: 61.2%;
+  --vale-focus-3-r: 9vmin;
+  --vale-focus-4-x: 44%;
+  --vale-focus-4-y: 78%;
+  --vale-focus-4-r: 13.5vmin;
+  --vale-focus-mask:
+    linear-gradient(#000, #000),
+    radial-gradient(circle var(--vale-focus-1-r) at var(--vale-focus-1-x) var(--vale-focus-1-y), transparent 86%, #000 100%),
+    radial-gradient(circle var(--vale-focus-2-r) at var(--vale-focus-2-x) var(--vale-focus-2-y), transparent 86%, #000 100%),
+    radial-gradient(circle var(--vale-focus-3-r) at var(--vale-focus-3-x) var(--vale-focus-3-y), transparent 86%, #000 100%),
+    radial-gradient(circle var(--vale-focus-4-r) at var(--vale-focus-4-x) var(--vale-focus-4-y), transparent 86%, #000 100%),
+    radial-gradient(ellipse 56% 30% at 42% 82%, transparent 88%, #000 100%);
+}
+
+/* ─── Cena — layout congelado; pós-processo só dentro de .vale-scene-fx ─── */
+.vale-scene {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+
+/*
+ * Camadas de z-index (hero):
+ * 0   bg
+ * 1   props 2D (poste — atrás do Cadu)
+ * 2   caminho de pedras
+ * 3   canvas 3D (Cadu, casa, plantas)
+ * 4   pós-processo (.vale-scene-fx)
+ * 60  UI (.vale-ui-root)
+ */
+.vale-scene-fx {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  isolation: isolate;
+}
+
+/* Contraste / saturação — só sobre a cena (mantém a névoa nos spots) */
+.vale-scene-fx .vale-air-tint {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  -webkit-backdrop-filter: saturate(0.94) contrast(0.96);
+  backdrop-filter: saturate(0.94) contrast(0.96);
+}
+
+/* Blur leve — recortado nos spots de nitidez */
+.vale-scene-fx .vale-air-blur {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  -webkit-backdrop-filter: blur(1px);
+  backdrop-filter: blur(1px);
+}
+
+.vale-page--hero .vale-air-blur,
+.vale-page--hero .vale-bloom-blur {
+  -webkit-mask-image: var(--vale-focus-mask);
+  mask-image: var(--vale-focus-mask);
+  -webkit-mask-composite: source-in, source-in, source-in, source-in, source-in;
+  mask-composite: intersect, intersect, intersect, intersect, intersect;
+}
+
+.vale-scene-fx .vale-color-grade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(255, 225, 170, 0.22), transparent 45%),
+    linear-gradient(to bottom, rgba(255, 190, 210, 0.12), rgba(255, 170, 120, 0.1));
+  mix-blend-mode: soft-light;
+}
+
+.vale-scene-fx .vale-haze {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+  background: rgba(255, 215, 185, 0.08);
+  mix-blend-mode: screen;
+}
+
+.vale-scene-fx .vale-bloom-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  background: radial-gradient(circle at 50% 30%, rgba(255, 235, 190, 0.18), transparent 48%);
+  mix-blend-mode: screen;
+  opacity: 0.45;
+}
+
+/* Bloom difuso — só o blur é recortado nos spots; a cor fica em .vale-bloom-glow */
+.vale-scene-fx .vale-bloom-blur {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 6;
+  background: radial-gradient(circle at 50% 30%, rgba(255, 235, 190, 0.18), transparent 48%);
+  filter: blur(10px);
+  mix-blend-mode: screen;
+  opacity: 0.28;
+}
+
+/* UI interativa — sempre acima do pós-processo da cena */
+.vale-ui-root {
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+}
+
+.vale-ui-root > * {
+  pointer-events: auto;
+}
+
+.vale-page__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(70% 45% at 55% 12%, rgba(200, 220, 255, 0.45) 0%, transparent 65%),
+    radial-gradient(90% 55% at 30% 20%, rgba(255, 210, 225, 0.35) 0%, transparent 60%),
+    radial-gradient(100% 70% at 50% 95%, rgba(210, 160, 130, 0.3) 0%, transparent 50%),
+    linear-gradient(180deg, #d8e4f8 0%, #ffe4d8 35%, #f5d0bc 72%, #ddb8a4 100%);
+}
+
+/* ─── Plano de fundo da referência — preservado intacto ─── */
+.vale-page__reference-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-color: #c8a8b0;
+  background-position: center 42%;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.vale-page__reference-sunglow,
+.vale-page__reference-haze {
+  display: none;
+}
+
+.vale-scene__host {
+  position: absolute;
+  inset: 0;
+  z-index: 3; /* acima do caminho de pedras — plantas 3D sobrepõem */
+  width: 100%;
+  height: 100%;
+}
+
+/* Cliques passam para os hotspots do caminho; editor de plantas reativa o canvas */
+.vale-page--hero .vale-scene__host {
+  pointer-events: none;
+}
+
+body.vale-flower-editor-active .vale-page--hero .vale-scene__host {
+  pointer-events: auto;
+}
+
+/* Névoa alaranjada — transição casa do urso → grama do fundo */
+.vale-ground-fog {
+  position: absolute;
+  left: -4%;
+  right: -4%;
+  bottom: 0;
+  height: 42%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse 68% 95% at 54% 92%,
+      rgba(255, 148, 72, 0.62) 0%,
+      rgba(255, 118, 52, 0.28) 42%,
+      transparent 72%
+    ),
+    linear-gradient(
+      to top,
+      rgba(255, 108, 48, 0.48) 0%,
+      rgba(255, 152, 82, 0.26) 28%,
+      rgba(255, 178, 108, 0.1) 52%,
+      transparent 100%
+    );
+  mix-blend-mode: screen;
+  filter: blur(3px);
+  opacity: 0.92;
+}
+
+.vale-ground-fog::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 90% 55% at 50% 100%,
+    rgba(255, 185, 120, 0.35) 0%,
+    transparent 65%
+  );
+  mix-blend-mode: soft-light;
+}
+
+.vale-scene__canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+.vale-page__vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 88% 68% at 48% 48%, transparent 52%, rgba(90, 55, 45, 0.14) 100%),
+    linear-gradient(180deg, transparent 0%, transparent 78%, rgba(160, 110, 90, 0.12) 100%);
+}
+
+/* ─── Header glass ─── */
+.vale-page__header {
+  position: absolute;
+  top: max(0.85rem, env(safe-area-inset-top));
+  left: 50%;
+  z-index: 4;
+  transform: translateX(-50%);
+  text-align: center;
+  pointer-events: none;
+}
+
+.vale-page__header-glass {
+  padding: 0.55rem 1.35rem 0.6rem;
+  border-radius: 1.1rem;
+  background: rgba(255, 252, 248, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 0 6px 24px rgba(74, 44, 42, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.vale-page__title {
+  margin: 0;
+  font-size: clamp(0.95rem, 2.4vw, 1.2rem);
+  font-weight: 800;
+  color: rgba(74, 44, 42, 0.82);
+  letter-spacing: -0.02em;
+}
+
+.vale-page__tagline {
+  margin: 0.08rem 0 0;
+  font-size: clamp(0.68rem, 1.4vw, 0.78rem);
+  font-weight: 600;
+  color: rgba(74, 44, 42, 0.5);
+}
+
+/* ─── Card de missão (canto inferior direito) ─── */
+.vale-page__mission-card {
+  position: absolute;
+  right: max(0.85rem, env(safe-area-inset-right));
+  bottom: max(5.8rem, calc(env(safe-area-inset-bottom) + 5.2rem));
+  z-index: 4;
+  max-width: min(42vw, 13.5rem);
+  padding: 0.65rem 0.85rem;
+  border-radius: 1rem;
+  background: rgba(255, 252, 248, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  box-shadow: 0 8px 22px rgba(74, 44, 42, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  pointer-events: none;
+}
+
+.vale-page__mission-label {
+  display: block;
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #ff7d95;
+  margin-bottom: 0.15rem;
+}
+
+.vale-page__mission-text {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #4a2c2a;
+  line-height: 1.3;
+}
+
+.vale-page__mission-progress {
+  margin: 0.2rem 0 0;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: rgba(74, 44, 42, 0.55);
+}
+
+/* ─── Balão do Cadu (transiente) ─── */
+.vale-page__speech {
+  position: absolute;
+  top: calc(max(0.85rem, env(safe-area-inset-top)) + 4.8rem);
+  left: max(0.85rem, env(safe-area-inset-left));
+  z-index: 4;
+  transform: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: min(88vw, 26rem);
+  padding: 0.55rem 1rem 0.55rem 0.55rem;
+  border-radius: 1.4rem;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 8px 24px rgba(74, 44, 42, 0.12);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  pointer-events: none;
+  animation:
+    vale-speech-in 0.45s cubic-bezier(0.22, 1.2, 0.36, 1),
+    vale-speech-out 0.5s ease 7.5s forwards;
+}
+
+.vale-page__speech-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  flex-shrink: 0;
+  border-radius: 0.9rem;
+  background: #ffe0e6;
+  font-size: 1.2rem;
+}
+
+.vale-page__speech-text {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #4a2c2a;
+}
+
+/* ─── Footer / ações ─── */
+.vale-page__footer {
+  position: absolute;
+  bottom: max(1.1rem, env(safe-area-inset-bottom));
+  left: 50%;
+  z-index: 4;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+  width: min(94vw, 560px);
+  pointer-events: none;
+}
+
+.vale-page__hint {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: rgba(74, 44, 42, 0.55);
+  text-shadow: 0 1px 8px rgba(255, 255, 255, 0.6);
+}
+
+.vale-page__actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.vale-page__btn {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.62rem 1.15rem;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.85);
+  color: #4a2c2a;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(74, 44, 42, 0.14);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.vale-page__btn:hover {
+  transform: translateY(-2px);
+  background: #fff;
+  box-shadow: 0 8px 26px rgba(74, 44, 42, 0.18);
+}
+
+.vale-page__btn--primary {
+  background: #ff8fa3;
+  color: #fff;
+}
+
+.vale-page__btn--primary:hover {
+  background: #ff7d95;
+}
+
+/* ─── Modal de conquistas ─── */
+.vale-page__modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(74, 44, 42, 0.32);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.vale-page__modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 22rem;
+  width: 100%;
+  padding: 1.75rem 1.5rem;
+  border-radius: 1.75rem;
+  background: rgba(255, 251, 247, 0.97);
+  text-align: center;
+  box-shadow: 0 22px 60px rgba(74, 44, 42, 0.28);
+  animation: vale-modal-pop 0.32s cubic-bezier(0.22, 1.4, 0.36, 1);
+}
+
+.vale-page__modal-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 999px;
+  background: #ffeccf;
+  font-size: 2rem;
+}
+
+.vale-page__modal-title {
+  margin: 0.25rem 0 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #4a2c2a;
+}
+
+.vale-page__modal-text {
+  margin: 0 0 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: rgba(74, 44, 42, 0.65);
+  line-height: 1.4;
+}
+
+/* ─── Badge de landmark (só aparece quando o Cadu chega perto) ─── */
+.vale-landmark-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 5px 11px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 4px 14px rgba(74, 44, 42, 0.18);
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  animation: vale-soon-pop 0.3s cubic-bezier(0.22, 1.4, 0.36, 1);
+}
+
+.vale-landmark-badge strong {
+  font-size: 11px;
+  font-weight: 800;
+  color: #4a2c2a;
+}
+
+.vale-landmark-badge span {
+  font-size: 9px;
+  font-weight: 700;
+  color: #ff7d95;
+}
+
+/* ─── Card da Casa do Urso (proximidade) ─── */
+.vale-page__house-card {
+  position: fixed;
+  right: max(0.85rem, env(safe-area-inset-right));
+  bottom: max(10.5rem, calc(env(safe-area-inset-bottom) + 9.8rem));
+  z-index: 1;
+  transform: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.45rem;
+  max-width: min(88vw, 17.5rem);
+  padding: 1rem 1.15rem;
+  border-radius: 1.25rem;
+  background: rgba(255, 251, 247, 0.94);
+  box-shadow: 0 14px 40px rgba(74, 44, 42, 0.18);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  pointer-events: auto;
+  animation: vale-house-card-in 0.38s cubic-bezier(0.22, 1.3, 0.36, 1);
+}
+
+.vale-page__house-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 0.85rem;
+  background: #ffe8d6;
+  font-size: 1.25rem;
+}
+
+.vale-page__house-card-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #4a2c2a;
+  line-height: 1.25;
+}
+
+.vale-page__house-card-progress {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgba(74, 44, 42, 0.72);
+  line-height: 1.35;
+}
+
+.vale-page__house-card-mission {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #4a2c2a;
+  line-height: 1.35;
+}
+
+.vale-page__house-card-mission span {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #ff7d95;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.15rem;
+}
+
+.vale-page__house-card-enter {
+  margin-top: 0.25rem;
+  width: 100%;
+  justify-content: center;
+}
+
+.vale-page__house-card-hint {
+  margin: 0.15rem 0 0;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: rgba(74, 44, 42, 0.45);
+  text-align: center;
+}
+
+.vale-page__modal-backdrop--house {
+  z-index: 2;
+}
+
+/* ─── Hub da Casa do Urso (modal sobre a cena) ─── */
+.vale-page__hub {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  max-width: min(92vw, 26rem);
+  max-height: min(88vh, 640px);
+  width: 100%;
+  padding: 1.15rem 1.2rem 1.25rem;
+  border-radius: 1.5rem;
+  background: rgba(255, 251, 247, 0.98);
+  overflow-y: auto;
+  box-shadow: 0 22px 60px rgba(74, 44, 42, 0.28);
+  animation: vale-modal-pop 0.32s cubic-bezier(0.22, 1.4, 0.36, 1);
+}
+
+.vale-page__hub-header {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.vale-page__hub-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  flex-shrink: 0;
+  border-radius: 0.9rem;
+  background: #ffe8d6;
+  font-size: 1.35rem;
+}
+
+.vale-page__hub-title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #4a2c2a;
+}
+
+.vale-page__hub-subtitle {
+  margin: 0.1rem 0 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: rgba(74, 44, 42, 0.55);
+}
+
+.vale-page__hub-close {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  border-radius: 999px;
+  background: rgba(74, 44, 42, 0.08);
+  color: rgba(74, 44, 42, 0.65);
+  font-size: 0.85rem;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.vale-page__hub-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.vale-page__hub-section-title {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #ff7d95;
+}
+
+.vale-page__hub-mission {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #4a2c2a;
+  line-height: 1.35;
+}
+
+.vale-page__hub-meta {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(74, 44, 42, 0.6);
+}
+
+.vale-page__hub-progress-bar {
+  height: 0.45rem;
+  border-radius: 999px;
+  background: rgba(74, 44, 42, 0.1);
+  overflow: hidden;
+}
+
+.vale-page__hub-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #ff8fa3, #ffb84d);
+  transition: width 0.4s ease;
+}
+
+.vale-page__hub-progress-label {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: rgba(74, 44, 42, 0.65);
+}
+
+.vale-page__hub-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.vale-page__hub-list-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.65rem;
+  border-radius: 0.75rem;
+  background: rgba(255, 232, 214, 0.45);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #4a2c2a;
+}
+
+.vale-page__hub-tip {
+  display: flex;
+  gap: 0.6rem;
+  padding: 0.75rem;
+  border-radius: 1rem;
+  background: #fff0f3;
+}
+
+.vale-page__hub-tip-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  flex-shrink: 0;
+  border-radius: 0.75rem;
+  background: #ffe0e6;
+  font-size: 1.1rem;
+}
+
+.vale-page__hub-tip-title {
+  margin: 0 0 0.2rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #ff7d95;
+}
+
+.vale-page__hub-tip-text {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #4a2c2a;
+  line-height: 1.35;
+}
+
+.vale-page__hub-cta {
+  width: 100%;
+  justify-content: center;
+  margin-top: 0.15rem;
+}
+
+@keyframes vale-house-card-in {
+  from {
+    transform: translateX(12px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* ─── Toast de descoberta ─── */
+.vale-page__toast {
+  position: absolute;
+  bottom: max(7.2rem, calc(env(safe-area-inset-bottom) + 6.4rem));
+  left: 50%;
+  z-index: 5;
+  transform: translateX(-50%);
+  padding: 0.55rem 1.2rem;
+  border-radius: 999px;
+  background: rgba(74, 44, 42, 0.86);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 10px 30px rgba(74, 44, 42, 0.3);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  pointer-events: none;
+  animation: vale-toast-in 0.4s cubic-bezier(0.22, 1.3, 0.36, 1);
+}
+
+/* ─── Loading / erro ─── */
+.vale-page__splash {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.1rem;
+}
+
+.vale-page__pulse {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 0 0 rgba(255, 143, 163, 0.45);
+  animation: vale-pulse 1.6s ease-in-out infinite;
+}
+
+.vale-page__splash-hint {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: rgba(74, 44, 42, 0.65);
+}
+
+.vale-page__error {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.5rem;
+  text-align: center;
+  color: #4a2c2a;
+  background: rgba(253, 238, 224, 0.94);
+}
+
+.vale-page__error-detail {
+  margin: 0;
+  font-size: 0.85rem;
+  color: rgba(74, 44, 42, 0.6);
+  max-width: 28rem;
+}
+
+@keyframes vale-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(255, 143, 163, 0.45);
+  }
+  50% {
+    transform: scale(1.06);
+    box-shadow: 0 0 0 14px rgba(255, 143, 163, 0);
+  }
+}
+
+@keyframes vale-modal-pop {
+  from {
+    transform: scale(0.88);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes vale-soon-pop {
+  from {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes vale-speech-in {
+  from {
+    transform: translateY(-8px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes vale-speech-out {
+  to {
+    transform: translateY(-6px);
+    opacity: 0;
+  }
+}
+
+@keyframes vale-toast-in {
+  from {
+    transform: translateX(-50%) translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ─── Mobile ─── */
+@media (max-width: 560px) {
+  .vale-page__house-card {
+    bottom: max(9.5rem, calc(env(safe-area-inset-bottom) + 8.8rem));
+    max-width: min(88vw, 16rem);
+  }
+
+  .vale-page__mission-card {
+    max-width: min(48vw, 11.5rem);
+    bottom: max(5.4rem, calc(env(safe-area-inset-bottom) + 4.8rem));
+  }
+
+  .vale-page__speech {
+    max-width: min(72vw, 16rem);
+  }
+
+  .vale-page__speech-text {
+    font-size: 0.76rem;
+  }
+
+  .vale-page__btn {
+    padding: 0.55rem 0.9rem;
+    font-size: 0.78rem;
+  }
+}
+
+/* ─── Caminho de pedras — imagem + hotspots (abaixo das plantas 3D) ─── */
+.vale-stone-nodes {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  perspective: 1400px;
+  perspective-origin: 50% 80%;
+}
+
+.vale-path-layer {
+  position: absolute;
+  transform-origin: left bottom;
+  transform-style: preserve-3d;
+  pointer-events: none;
+  line-height: 0;
+}
+
+.vale-path-layer__hits {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+
+.stone-path-hit {
+  position: absolute;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  pointer-events: auto;
+  transform: translate(-50%, -50%);
+}
+
+.stone-path-hit--locked {
+  cursor: not-allowed;
+}
+
+.stone-path-hit--editor {
+  cursor: pointer;
+}
+
+.stone-path-hit__ring {
+  position: absolute;
+  inset: 0;
+  border: 2px dashed rgba(120, 200, 255, 0.85);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.stone-path-hit--selected .stone-path-hit__ring {
+  border-color: rgba(255, 200, 80, 0.95);
+}
+
+.stone-path-hit__check {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1rem;
+  height: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #7ed957, #5aad42);
+  color: #fff;
+  font-size: 0.58rem;
+  font-weight: 900;
+  pointer-events: none;
+}
+
+.stone-path-hit__pulse {
+  position: absolute;
+  inset: 5%;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 210, 150, 0.8);
+  animation: stone-node-pulse 2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.stone-path-hit__emoji {
+  position: absolute;
+  top: -20%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: clamp(0.65rem, 1.4vw, 0.9rem);
+  filter: drop-shadow(0 1px 3px rgba(30, 15, 8, 0.35));
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.stone-path-hit--current .stone-path-hit__emoji,
+.stone-path-hit:hover:not(.stone-path-hit--locked) .stone-path-hit__emoji {
+  opacity: 1;
+}
+
+.vale-path-layer--editor {
+  pointer-events: auto;
+  cursor: grab;
+}
+
+.vale-path-layer--selected {
+  cursor: grab;
+}
+
+.vale-path-layer__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+  -webkit-user-drag: none;
+  mix-blend-mode: screen;
+}
+
+.vale-path-layer--selected .vale-path-layer__img {
+  filter: drop-shadow(0 0 14px rgba(255, 200, 100, 0.65));
+}
+
+.vale-path-layer__ring {
+  position: absolute;
+  inset: -4px;
+  border: 2px dashed rgba(255, 200, 80, 0.9);
+  border-radius: 12px;
+  pointer-events: none;
+}
+
+.stone-node {
+  position: absolute;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  pointer-events: auto;
+  transform-origin: center bottom;
+  line-height: 0;
+}
+
+.stone-node__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+  -webkit-user-drag: none;
+  filter: drop-shadow(0 6px 14px rgba(40, 22, 14, 0.35));
+}
+
+.stone-node--locked {
+  cursor: not-allowed;
+  opacity: 0.52;
+}
+
+.stone-node--locked .stone-node__img {
+  filter: grayscale(0.2) saturate(0.8) drop-shadow(0 3px 8px rgba(40, 22, 14, 0.2));
+}
+
+.stone-node--current .stone-node__img {
+  filter: drop-shadow(0 8px 18px rgba(200, 120, 90, 0.45));
+}
+
+.stone-node--current .stone-node__pulse {
+  position: absolute;
+  left: 50%;
+  top: 15%;
+  width: 80%;
+  height: 50%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  border: 2px solid rgba(255, 210, 150, 0.8);
+  animation: stone-node-pulse 2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes stone-node-pulse {
+  0%,
+  100% {
+    transform: translateX(-50%) scale(0.9);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateX(-50%) scale(1.05);
+    opacity: 1;
+  }
+}
+
+.stone-node__check {
+  position: absolute;
+  top: 8%;
+  right: 12%;
+  width: 1.15rem;
+  height: 1.15rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #7ed957, #5aad42);
+  color: #fff;
+  font-size: 0.62rem;
+  font-weight: 900;
+  box-shadow: 0 2px 6px rgba(50, 100, 40, 0.35);
+  pointer-events: none;
+}
+
+.stone-node__emoji {
+  position: absolute;
+  top: -8%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: clamp(0.7rem, 1.8vw, 0.95rem);
+  filter: drop-shadow(0 1px 3px rgba(30, 15, 8, 0.35));
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.stone-node--current .stone-node__emoji,
+.stone-node:hover:not(.stone-node--locked) .stone-node__emoji {
+  opacity: 1;
+}
+
+.stone-node--hotspot:not(.stone-node--editor) {
+  opacity: 1;
+}
+
+.stone-node--hotspot.stone-node--locked {
+  opacity: 0.55;
+}
+
+.stone-node--hotspot .stone-node__emoji {
+  opacity: 0;
+}
+
+.stone-node--hotspot.stone-node--current .stone-node__emoji,
+.stone-node--hotspot:hover:not(.stone-node--locked) .stone-node__emoji {
+  opacity: 1;
+}
+
+.stone-node__hotspot-ring {
+  position: absolute;
+  inset: 8%;
+  border: 2px dashed rgba(120, 200, 255, 0.85);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.stone-node--editor {
+  cursor: grab;
+  opacity: 1 !important;
+}
+
+.stone-node--editor.stone-node--selected {
+  cursor: grab;
+}
+
+.stone-node--selected .stone-node__img {
+  filter: drop-shadow(0 0 12px rgba(255, 200, 100, 0.75));
+}
+
+.stone-node__editor-ring {
+  position: absolute;
+  inset: -8%;
+  border: 2px dashed rgba(255, 210, 120, 0.9);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Editor de layout das pedras (tecla G — igual sala sensorial) */
+.stone-editor-panel {
+  position: fixed;
+  right: 16px;
+  top: 72px;
+  z-index: 60;
+  width: min(360px, calc(100vw - 24px));
+  max-height: calc(100vh - 96px);
+  overflow-y: auto;
+  padding: 0.85rem 1rem 1rem;
+  border-radius: 14px;
+  background: rgba(255, 252, 248, 0.96);
+  border: 1px solid rgba(180, 140, 120, 0.35);
+  box-shadow: 0 12px 40px rgba(40, 22, 14, 0.22);
+  font-size: 0.78rem;
+  color: #4a3028;
+}
+
+.stone-editor-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.stone-editor-panel__title {
+  font-weight: 800;
+  font-size: 0.88rem;
+}
+
+.stone-editor-panel__close {
+  border: none;
+  background: transparent;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #8a6050;
+}
+
+.stone-editor-panel__hint {
+  margin: 0 0 0.65rem;
+  color: #7a5848;
+  line-height: 1.4;
+}
+
+.stone-editor-panel__hint kbd {
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  background: #f0e4dc;
+  font-size: 0.72rem;
+}
+
+.stone-editor-panel__asset {
+  margin-bottom: 0.75rem;
+  padding: 0.55rem 0.6rem;
+  border-radius: 10px;
+  background: #f8f0ea;
+}
+
+.stone-editor-panel__asset-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-weight: 700;
+  font-size: 0.72rem;
+}
+
+.stone-editor-panel__asset-input {
+  width: 100%;
+  padding: 0.35rem 0.5rem;
+  border-radius: 8px;
+  border: 1px solid rgba(160, 120, 100, 0.4);
+  font-size: 0.72rem;
+  font-family: ui-monospace, monospace;
+}
+
+.stone-editor-panel__asset-actions {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.45rem;
+}
+
+.stone-editor-panel__subhint {
+  margin: 0.35rem 0 0;
+  font-size: 0.68rem;
+  color: #7a5a48;
+  line-height: 1.35;
+}
+
+.stone-editor-panel__obj--path {
+  grid-column: 1 / -1;
+}
+
+.stone-editor-panel__objects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.75rem;
+}
+
+.stone-editor-panel__obj {
+  padding: 0.35rem 0.55rem;
+  border-radius: 8px;
+  border: 1px solid rgba(180, 140, 120, 0.4);
+  background: #fff;
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.stone-editor-panel__obj.is-active {
+  background: #ffe8d8;
+  border-color: #e8a080;
+}
+
+.stone-editor-panel__obj.has-override::after {
+  content: '•';
+  color: #5aad42;
+  margin-left: 0.15rem;
+}
+
+.stone-editor-panel__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin-bottom: 0.65rem;
+}
+
+.stone-editor-panel__field {
+  display: grid;
+  grid-template-columns: 72px 1fr 52px;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 600;
+}
+
+.stone-editor-panel__field input[type='number'] {
+  width: 100%;
+  padding: 0.2rem 0.35rem;
+  border-radius: 6px;
+  border: 1px solid rgba(160, 120, 100, 0.35);
+  font-size: 0.72rem;
+}
+
+.stone-editor-panel__readout {
+  display: block;
+  margin-top: 0.25rem;
+  padding: 0.45rem 0.5rem;
+  border-radius: 8px;
+  background: #f8f0ea;
+  font-size: 0.68rem;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.stone-editor-panel__msg {
+  margin: 0 0 0.5rem;
+  color: #5a8a42;
+  font-weight: 600;
+}
+
+.stone-editor-panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.stone-editor-panel__btn {
+  padding: 0.4rem 0.65rem;
+  border-radius: 8px;
+  border: none;
+  background: #e89078;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+
+.stone-editor-panel__btn--ghost {
+  background: transparent;
+  color: #7a5040;
+  border: 1px solid rgba(160, 120, 100, 0.45);
+}
+
+body.vale-stone-editor-active .stone-node--editor {
+  pointer-events: auto;
+}
+
+/* Asset individual de pedra — uso em UI (mapa, progresso, inventário) */
+.path-stone-asset {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+
+.path-stone-asset img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* ─── Editor de spots de nitidez (tecla F ou ?focus=1) ─── */
+.vale-focus-handles {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  pointer-events: none;
+}
+
+.vale-focus-handle {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: grab;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.vale-focus-handle:active {
+  cursor: grabbing;
+}
+
+.vale-focus-handle__ring {
+  position: absolute;
+  inset: 0;
+  border: 2px dashed rgba(255, 60, 60, 0.82);
+  border-radius: 50%;
+  background: rgba(255, 80, 80, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+  pointer-events: none;
+}
+
+.vale-focus-handle--selected .vale-focus-handle__ring {
+  border-color: rgba(255, 220, 80, 0.95);
+  background: rgba(255, 220, 80, 0.16);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.45),
+    0 0 0 3px rgba(255, 220, 80, 0.25);
+}
+
+.vale-focus-handle__label {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #8a3030;
+  font-size: 0.72rem;
+  font-weight: 800;
+  pointer-events: none;
+  box-shadow: 0 2px 8px rgba(40, 20, 10, 0.18);
+}
+
+.vale-focus-editor-panel {
+  position: fixed;
+  left: 16px;
+  top: max(72px, env(safe-area-inset-top));
+  z-index: 60;
+  width: min(320px, calc(100vw - 24px));
+  padding: 0.85rem 1rem 1rem;
+  border-radius: 14px;
+  background: rgba(255, 252, 248, 0.96);
+  border: 1px solid rgba(180, 140, 120, 0.35);
+  box-shadow: 0 12px 40px rgba(40, 22, 14, 0.22);
+  font-size: 0.78rem;
+  color: #4a3028;
+}
+
+.vale-focus-editor-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.vale-focus-editor-panel__title {
+  font-weight: 800;
+  font-size: 0.88rem;
+}
+
+.vale-focus-editor-panel__close {
+  border: none;
+  background: transparent;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #8a6050;
+}
+
+.vale-focus-editor-panel__hint {
+  margin: 0 0 0.65rem;
+  color: #7a5848;
+  line-height: 1.4;
+}
+
+.vale-focus-editor-panel__hint kbd {
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  background: #f0e4dc;
+  font-size: 0.72rem;
+}
+
+.vale-focus-editor-panel__tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 0.65rem;
+}
+
+.vale-focus-editor-panel__tab {
+  padding: 0.4rem 0.55rem;
+  border-radius: 8px;
+  border: 1px solid rgba(160, 120, 100, 0.35);
+  background: #faf4ef;
+  color: #5a4038;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+
+.vale-focus-editor-panel__tab.is-active {
+  background: #ffe8dc;
+  border-color: rgba(220, 140, 100, 0.55);
+}
+
+.vale-focus-editor-panel__fields {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.45rem;
+  margin-bottom: 0.55rem;
+}
+
+.vale-focus-editor-panel__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.vale-focus-editor-panel__field input {
+  width: 100%;
+  padding: 0.3rem 0.4rem;
+  border-radius: 8px;
+  border: 1px solid rgba(160, 120, 100, 0.4);
+  font-size: 0.72rem;
+}
+
+.vale-focus-editor-panel__readout {
+  display: block;
+  margin-bottom: 0.55rem;
+  padding: 0.35rem 0.45rem;
+  border-radius: 8px;
+  background: #f8f0ea;
+  font-size: 0.68rem;
+}
+
+.vale-focus-editor-panel__msg {
+  margin: 0 0 0.5rem;
+  color: #6a8848;
+  font-weight: 600;
+}
+
+.vale-focus-editor-panel__actions {
+  display: flex;
+  gap: 0.45rem;
+}
+
+.vale-focus-editor-panel__btn {
+  padding: 0.4rem 0.65rem;
+  border-radius: 8px;
+  border: none;
+  background: #e89078;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+
+.vale-focus-editor-panel__btn--ghost {
+  background: transparent;
+  color: #7a5040;
+  border: 1px solid rgba(160, 120, 100, 0.45);
+}
+
+body.vale-focus-editor-active {
+  user-select: none;
+}
+
+/* ─── Editor de plantas (tecla P ou ?flowers=1) ─── */
+.vale-flower-editor-panel {
+  position: fixed;
+  right: 16px;
+  top: max(72px, env(safe-area-inset-top));
+  z-index: 60;
+  width: min(320px, calc(100vw - 24px));
+  max-height: calc(100vh - 96px);
+  overflow-y: auto;
+  padding: 0.85rem 1rem 1rem;
+  border-radius: 14px;
+  background: rgba(255, 252, 248, 0.96);
+  border: 1px solid rgba(140, 110, 180, 0.35);
+  box-shadow: 0 12px 40px rgba(40, 22, 14, 0.22);
+  font-size: 0.78rem;
+  color: #4a3028;
+}
+
+.vale-flower-editor-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.vale-flower-editor-panel__title {
+  font-weight: 800;
+  font-size: 0.88rem;
+}
+
+.vale-flower-editor-panel__close {
+  border: none;
+  background: transparent;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #8a6050;
+}
+
+.vale-flower-editor-panel__hint {
+  margin: 0 0 0.65rem;
+  color: #7a5848;
+  line-height: 1.4;
+}
+
+.vale-flower-editor-panel__hint kbd {
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  background: #f0e4dc;
+  font-size: 0.72rem;
+}
+
+.vale-flower-editor-panel__axis {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.35rem;
+  margin-bottom: 0.65rem;
+}
+
+.vale-flower-editor-panel__axis-btn {
+  padding: 0.38rem 0.45rem;
+  border-radius: 8px;
+  border: 1px solid rgba(100, 150, 220, 0.4);
+  background: #f0f6ff;
+  color: #3a5080;
+  font-size: 0.68rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.vale-flower-editor-panel__axis-btn.is-active {
+  background: #dcecff;
+  border-color: rgba(74, 140, 230, 0.65);
+  color: #1a4080;
+}
+
+.vale-flower-editor-panel__slider-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 0.65rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #3a5080;
+}
+
+.vale-flower-editor-panel__slider-field input[type='range'] {
+  width: 100%;
+  accent-color: #4aa8ff;
+}
+
+.vale-flower-editor-panel__slider-value {
+  font-family: ui-monospace, monospace;
+  font-size: 0.68rem;
+  color: #5a4038;
+}
+
+.vale-flower-editor-panel__tabs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.35rem;
+  margin-bottom: 0.65rem;
+}
+
+.vale-flower-editor-panel__tab {
+  padding: 0.35rem 0.45rem;
+  border-radius: 8px;
+  border: 1px solid rgba(140, 110, 180, 0.35);
+  background: #faf4ef;
+  color: #5a4038;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+
+.vale-flower-editor-panel__tab.is-active {
+  background: #f3e6ff;
+  border-color: rgba(160, 120, 200, 0.55);
+}
+
+.vale-flower-editor-panel__fields {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.45rem;
+  margin-bottom: 0.55rem;
+}
+
+.vale-flower-editor-panel__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.vale-flower-editor-panel__field input {
+  width: 100%;
+  padding: 0.3rem 0.4rem;
+  border-radius: 8px;
+  border: 1px solid rgba(160, 120, 100, 0.4);
+  font-size: 0.72rem;
+}
+
+.vale-flower-editor-panel__readout {
+  display: block;
+  margin-bottom: 0.55rem;
+  padding: 0.35rem 0.45rem;
+  border-radius: 8px;
+  background: #f8f0ea;
+  font-size: 0.68rem;
+}
+
+.vale-flower-editor-panel__msg {
+  margin: 0 0 0.5rem;
+  color: #6a8848;
+  font-weight: 600;
+}
+
+.vale-flower-editor-panel__actions {
+  display: flex;
+  gap: 0.45rem;
+}
+
+.vale-flower-editor-panel__btn {
+  padding: 0.4rem 0.65rem;
+  border-radius: 8px;
+  border: none;
+  background: #a878d0;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+
+.vale-flower-editor-panel__btn--ghost {
+  background: transparent;
+  color: #7a5040;
+  border: 1px solid rgba(160, 120, 100, 0.45);
+}
+
+body.vale-flower-editor-active {
+  user-select: none;
+}
+
+body.vale-flower-editor-active .vale-scene__canvas {
+  cursor: grab;
+}
+
+body.vale-flower-editor-active .vale-scene__canvas:active {
+  cursor: grabbing;
+}
+
+/* ─── Props 2D da cena (poste com lanterna, etc.) ─── */
+.vale-scene-props {
+  position: absolute;
+  inset: 0;
+  z-index: 1; /* abaixo do canvas 3D — Cadu e plantas ficam na frente */
+  pointer-events: none;
+  perspective: 1400px;
+  perspective-origin: 50% 80%;
+}
+
+.vale-scene-prop {
+  position: absolute;
+  transform-origin: left bottom;
+  transform-style: preserve-3d;
+  pointer-events: none;
+  line-height: 0;
+}
+
+.vale-scene-prop__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+  -webkit-user-drag: none;
+  /* Fundo preto do PNG some sobre o cenário */
+  mix-blend-mode: screen;
+}
+
+.vale-scene-prop--editor {
+  pointer-events: auto;
+  cursor: grab;
+}
+
+.vale-scene-prop--selected {
+  cursor: grab;
+}
+
+/* Blur aplicado inline no editor; glow só quando selecionado */
+
+.vale-scene-prop__ring {
+  position: absolute;
+  inset: -4px;
+  border: 2px dashed rgba(255, 180, 60, 0.9);
+  border-radius: 12px;
+  pointer-events: none;
+}
+
+/* Editor de props — tecla O ou ?poste=1 */
+.vale-prop-editor-panel {
+  position: fixed;
+  left: 16px;
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 60;
+  width: min(320px, calc(100vw - 24px));
+  padding: 0.85rem 1rem 1rem;
+  border-radius: 14px;
+  background: rgba(255, 252, 248, 0.96);
+  border: 1px solid rgba(180, 140, 90, 0.35);
+  box-shadow: 0 12px 40px rgba(40, 22, 14, 0.22);
+  font-size: 0.78rem;
+  color: #4a3028;
+}
+
+.vale-prop-editor-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.vale-prop-editor-panel__title {
+  font-weight: 800;
+  font-size: 0.88rem;
+}
+
+.vale-prop-editor-panel__close {
+  border: none;
+  background: transparent;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #8a6050;
+}
+
+.vale-prop-editor-panel__hint {
+  margin: 0 0 0.65rem;
+  color: #7a5848;
+  line-height: 1.4;
+}
+
+.vale-prop-editor-panel__hint kbd {
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  background: #f0e4dc;
+  font-size: 0.72rem;
+}
+
+.vale-prop-editor-panel__tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 0.65rem;
+}
+
+.vale-prop-editor-panel__tab {
+  padding: 0.4rem 0.55rem;
+  border-radius: 8px;
+  border: 1px solid rgba(160, 120, 100, 0.35);
+  background: #faf4ef;
+  color: #5a4038;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+
+.vale-prop-editor-panel__tab.is-active {
+  background: #ffe8dc;
+  border-color: rgba(220, 140, 100, 0.55);
+}
+
+.vale-prop-editor-panel__fields {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.45rem;
+  margin-bottom: 0.55rem;
+}
+
+.vale-prop-editor-panel__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.vale-prop-editor-panel__field input {
+  width: 100%;
+  padding: 0.3rem 0.4rem;
+  border-radius: 8px;
+  border: 1px solid rgba(160, 120, 100, 0.4);
+  font-size: 0.72rem;
+}
+
+.vale-prop-editor-panel__check {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.vale-prop-editor-panel__readout {
+  display: block;
+  margin-bottom: 0.55rem;
+  padding: 0.35rem 0.45rem;
+  border-radius: 8px;
+  background: #f8f0ea;
+  font-size: 0.68rem;
+}
+
+.vale-prop-editor-panel__msg {
+  margin: 0 0 0.5rem;
+  color: #6a8848;
+  font-weight: 600;
+}
+
+.vale-prop-editor-panel__actions {
+  display: flex;
+  gap: 0.45rem;
+}
+
+.vale-prop-editor-panel__btn {
+  padding: 0.4rem 0.65rem;
+  border-radius: 8px;
+  border: none;
+  background: #c89050;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+
+.vale-prop-editor-panel__btn--ghost {
+  background: transparent;
+  color: #7a5040;
+  border: 1px solid rgba(160, 120, 100, 0.45);
+}
+
+body.vale-prop-editor-active {
+  user-select: none;
+}
