@@ -10,6 +10,7 @@ export default function ChildLayout({ children }: { children: React.ReactNode })
   const router = useRouter()
   const pathname = usePathname()
   const isLife = pathname?.startsWith('/child/life')
+  const isComunicacao = pathname === '/child/life/comunicacao'
   const variant = isLife ? 'life' : 'default'
 
   useEffect(() => {
@@ -20,7 +21,12 @@ export default function ChildLayout({ children }: { children: React.ReactNode })
   if (mode !== 'child' && mode !== null) return null
 
   return (
-    <AppShell showStatus showStats={!isLife} showNav variant={variant}>
+    <AppShell
+      showStatus={!isComunicacao}
+      showStats={!isLife}
+      showNav
+      variant={variant}
+    >
       {children}
     </AppShell>
   )

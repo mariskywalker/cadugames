@@ -475,6 +475,18 @@
   }
 }
 
+/* Telas grandes — urso um pouco mais alto, centrado no palco */
+@media (min-width: 1200px) {
+  .home-scene__cadu-wrap {
+    bottom: 16% !important;
+  }
+
+  .home-scene__cadu-stack {
+    --palco-surface-offset: calc(var(--palco-width) * 246 / 1024);
+    --cadu-feet-lift: calc(var(--palco-width) * -0.034);
+  }
+}
+
 /* ─── CTAs principais ─── */
 .home-scene__cta-group {
   position: absolute;

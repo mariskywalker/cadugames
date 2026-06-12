@@ -5,8 +5,6 @@ const _fernWarmGreen = new THREE.Color('#bdd8a4')
 const _fernSunTint = new THREE.Color('#ffd8b8')
 const _lilacLightBloom = new THREE.Color('#dcc8f0')
 const _lilacSunTint = new THREE.Color('#ffe4d8')
-const _stumpWood = new THREE.Color('#9a6b42')
-const _stumpSunTint = new THREE.Color('#ffd0a0')
 
 function applyCelMesh(
   mesh: THREE.Mesh,
@@ -79,30 +77,6 @@ export function prepareSceneLilac(root: THREE.Object3D) {
       toon.color.multiplyScalar(1.07)
       toon.emissive.copy(_lilacSunTint)
       toon.emissiveIntensity = 0.05
-    })
-  })
-}
-
-/** Toco de árvore — preserva BaseColor/Roughness do OBJ quando existirem */
-export function prepareSceneStump(root: THREE.Object3D) {
-  const softGradient = getCelGradientMapSoft()
-
-  root.traverse((obj) => {
-    const mesh = obj as THREE.Mesh
-    if (!mesh.isMesh) return
-
-    applyCelMesh(mesh, (toon) => {
-      toon.gradientMap = softGradient
-      if (toon.map) {
-        toon.color.set('#ffffff')
-        toon.emissive.copy(_stumpSunTint)
-        toon.emissiveIntensity = 0.03
-      } else {
-        toon.color.lerp(_stumpWood, 0.42)
-        toon.color.multiplyScalar(0.98)
-        toon.emissive.copy(_stumpSunTint)
-        toon.emissiveIntensity = 0.04
-      }
     })
   })
 }

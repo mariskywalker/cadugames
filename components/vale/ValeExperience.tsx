@@ -13,7 +13,6 @@ import { ValeFlowerEditorPanel } from './ValeFlowerEditorPanel'
 import { ValeFocusSpotEditor } from './ValeFocusSpotEditor'
 import { ValeHeroHousePrompt } from './ValeHeroHousePrompt'
 import { ValePropEditorPanel } from './ValePropEditorPanel'
-import { ValeProgressPath } from './ValeProgressPath'
 import { ValeSceneProps } from './ValeSceneProps'
 import { ValeUIOverlay } from './ValeUIOverlay'
 import './vale.css'
@@ -99,7 +98,6 @@ export function ValeExperience() {
         ) : (
           <div className="vale-page__bg" aria-hidden />
         )}
-        <ValeProgressPath />
         {VALE_HERO_MODE && <ValeSceneProps />}
         {VALE_HERO_MODE && VALE_USE_REFERENCE_BG && (
           <div className="vale-ground-fog" aria-hidden />

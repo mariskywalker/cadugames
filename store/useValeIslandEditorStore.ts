@@ -27,7 +27,12 @@ export const useValeIslandEditorStore = create<ValeIslandEditorStore>((set, get)
 
   hydrate: () => {
     if (get().hydrated) return
-    set({ override: {}, layout: DEFAULT_ISLAND_LAYOUT, hydrated: true })
+    const override = loadIslandOverride()
+    set({
+      hydrated: true,
+      override,
+      layout: mergeIslandLayout(override),
+    })
   },
 
   setEditorActive: (active) => {

@@ -5,6 +5,8 @@
   inset: 0;
   z-index: 50; /* acima da navbar (z-40) do AppShell */
   overflow: hidden;
+  width: 100vw;
+  min-height: 100dvh;
   background: #d8e4f8;
   outline: none;
 }

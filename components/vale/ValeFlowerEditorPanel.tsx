@@ -83,7 +83,7 @@ export function ValeFlowerEditorPanel({
 
       <p className="vale-flower-editor-panel__hint">
         Scroll = profundidade · Shift+scroll = tamanho · Alça azul = eixo Z · <kbd>[</kbd>{' '}
-        <kbd>]</kbd> · <kbd>P</kbd> ou <kbd>T</kbd> (toco s-01)
+        <kbd>]</kbd> · <kbd>P</kbd>
       </p>
       {message && <p className="vale-flower-editor-panel__msg">{message}</p>}
 
@@ -109,7 +109,6 @@ export function ValeFlowerEditorPanel({
             onClick={() => select(flower.id)}
           >
             {index + 1}. {flower.id}
-            {flower.kind === 'stump' ? ' · toco' : ''}
           </button>
         ))}
       </div>

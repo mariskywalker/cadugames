@@ -2,23 +2,19 @@
 
 import { useGLTF } from '@react-three/drei'
 import { useFrame, type ThreeEvent } from '@react-three/fiber'
-import { useCallback, useMemo, useRef, type ComponentProps } from 'react'
+import { useCallback, useEffect, useMemo, useRef, type ComponentProps } from 'react'
 import * as THREE from 'three'
 import type { Group, Object3D } from 'three'
 import {
   useFernFlowerSource,
   useGltfFlowerSource,
   useLilacFlowerSource,
-  useStumpFlowerSource,
 } from '@/hooks/vale/useSceneFlowerSource'
 import { preloadSceneFern } from '@/lib/vale/loadSceneFern'
-import { preloadSceneLilac } from '@/lib/vale/loadSceneLilac'
-import { preloadSceneStump } from '@/lib/vale/loadSceneStump'
 import {
   prepareSceneFern,
   prepareSceneFlower,
   prepareSceneLilac,
-  prepareSceneStump,
 } from '@/lib/vale/prepareSceneFlower'
 import {
   VALE_FLOWER_ASSETS,
@@ -111,8 +107,6 @@ function ValeFlowerInstanceBody({
       prepareSceneFern(clone)
     } else if (placement.kind === 'lilac') {
       prepareSceneLilac(clone)
-    } else if (placement.kind === 'stump') {
-      prepareSceneStump(clone)
     } else {
       prepareSceneFlower(clone)
     }
@@ -227,7 +221,7 @@ function ValeFlowerInstanceBody({
   )
 
   useFrame((state) => {
-    if (editorActive || !swayRef.current || placement.kind === 'stump') return
+    if (editorActive || !swayRef.current) return
     const t = state.clock.elapsedTime * 0.55 + swaySeed
     swayRef.current.rotation.z = Math.sin(t) * 0.018
     swayRef.current.rotation.x = Math.sin(t * 0.82 + 0.4) * 0.012
@@ -306,9 +300,6 @@ function ValeFlowerInstance(props: {
   if (props.placement.kind === 'lilac') {
     return <ValeLilacFlowerInstance {...props} />
   }
-  if (props.placement.kind === 'stump') {
-    return <ValeStumpFlowerInstance {...props} />
-  }
   return <ValeGltfFlowerInstance {...props} />
 }
 
@@ -333,14 +324,8 @@ function ValeLilacFlowerInstance(
   return <ValeFlowerInstanceBody {...props} scene={scene} />
 }
 
-function ValeStumpFlowerInstance(
-  props: Omit<ComponentProps<typeof ValeFlowerInstanceBody>, 'scene'>,
-) {
-  const scene = useStumpFlowerSource()
-  return <ValeFlowerInstanceBody {...props} scene={scene} />
-}
-
 export function ValeSceneFlowers() {
+  const hydrate = useValeFlowerEditorStore((s) => s.hydrate)
   const placements = useValeFlowerEditorStore((s) => s.placements)
   const editorActive = useValeFlowerEditorStore((s) => s.editorActive)
   const selectedId = useValeFlowerEditorStore((s) => s.selectedId)
@@ -348,6 +333,10 @@ export function ValeSceneFlowers() {
   const select = useValeFlowerEditorStore((s) => s.select)
   const patch = useValeFlowerEditorStore((s) => s.patch)
   const setMoveAxis = useValeFlowerEditorStore((s) => s.setMoveAxis)
+
+  useEffect(() => {
+    hydrate()
+  }, [hydrate])
 
   return (
     <group name="vale-scene-flowers">
@@ -369,6 +358,5 @@ export function ValeSceneFlowers() {
 }
 
 useGLTF.preload(VALE_FLOWER_ASSETS.lavender.url)
+useGLTF.preload(VALE_FLOWER_ASSETS.lilac.url)
 preloadSceneFern()
-preloadSceneLilac()
-preloadSceneStump()

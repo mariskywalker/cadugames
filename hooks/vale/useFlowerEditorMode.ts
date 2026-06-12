@@ -19,14 +19,9 @@ export function useFlowerEditorMode() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
-    if (
-      params.get('flowers') === '1' ||
-      params.get('plantas') === '1' ||
-      params.get('stump') === '1' ||
-      params.get('toco') === '1'
-    ) {
+    if (params.get('flowers') === '1' || params.get('plantas') === '1') {
       setEditorMode(true)
-      setMessage('Editor de cenário — arraste no chão ou ajuste no painel (s-01 = toco).')
+      setMessage('Editor de cenário — arraste no chão ou ajuste no painel.')
     }
   }, [])
 
@@ -41,10 +36,7 @@ export function useFlowerEditorMode() {
         tag === 'INPUT' || tag === 'TEXTAREA' || (e.target as HTMLElement)?.isContentEditable
 
       if (
-        (e.key === 'p' ||
-          e.key === 'P' ||
-          e.key === 't' ||
-          e.key === 'T') &&
+        (e.key === 'p' || e.key === 'P') &&
         !e.metaKey &&
         !e.ctrlKey &&
         !e.altKey &&
@@ -53,9 +45,7 @@ export function useFlowerEditorMode() {
         e.preventDefault()
         setEditorMode((on) => {
           const next = !on
-          setMessage(
-            next ? 'Editor de cenário — arraste no chão ou ajuste no painel (s-01 = toco).' : null,
-          )
+          setMessage(next ? 'Editor de cenário — arraste no chão ou ajuste no painel.' : null)
           return next
         })
         return
