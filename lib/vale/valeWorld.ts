@@ -20,13 +20,15 @@ export const ISLAND_TARGET_SIZE = 11
  * LookAt deslocado à direita para acompanhar a casa.
  */
 export const VALE_CAMERA = {
-  position: [0.2, 1.35, 9.6] as [number, number, number],
-  target: [0.38, 1.0, -5.2] as [number, number, number],
-  fov: 56,
+  position: [0.25, 1.38, 8.5] as [number, number, number],
+  target: [0.48, 1.08, -5.2] as [number, number, number],
+  fov: 50,
 }
 
-/** Rotação 3/4 — ajustada no editor G */
+/** Rotação 3D da ilha — ajustada no editor G (rad) */
+export const VALE_ISLAND_ROTATION_X = 0
 export const VALE_ISLAND_ROTATION_Y = -0.4189
+export const VALE_ISLAND_ROTATION_Z = 0
 
 /**
  * Deslocamento da Casa do Urso — ajustado no editor G.
@@ -40,19 +42,23 @@ export const VALE_CHARACTER_SCALE = 0.9
 export const VALE_PATH_GROUND_Y = -0.18
 
 /** Altura do chão na porta da Casa do Urso — último degrau do GLB */
-export const VALE_HOUSE_GROUND_Y = 0.16
+export const VALE_HOUSE_GROUND_Y = 0.22
 
 /** Folga extra nos últimos degraus antes da porta */
-export const VALE_LAST_STEP_LIFT = 0.12
+export const VALE_LAST_STEP_LIFT = 0.14
 
 /** Ajuste fino dos pés sobre o chão visual */
-export const VALE_CHARACTER_FOOT_OFFSET = 0.2
+export const VALE_CHARACTER_FOOT_OFFSET = 0.24
 
 /** Compensa raycast no terreno 3D — evita o urso afundar */
 export const VALE_CHARACTER_Y_LIFT = 0.18
 
 /** Acima disso o raycast ignora (telhado, copa, paredes) */
 export const VALE_GROUND_RAY_MAX_Y = VALE_PATH_GROUND_Y + 0.42
+
+/** Limite mais alto no hero — degraus da casa no GLB */
+export const VALE_HERO_GROUND_RAY_MAX_Y =
+  VALE_HOUSE_GROUND_Y + VALE_LAST_STEP_LIFT + 0.22
 
 /** Porta da Casa do Urso — frente da ilha voltada para o caminho */
 export const VALE_HOUSE_ENTRY: [number, number] = [

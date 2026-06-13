@@ -3,7 +3,7 @@
 import { useMemo } from 'react'
 import { childProfile } from '@/lib/mockChildProfile'
 
-const SUBTEXT = 'Hoje vamos continuar sua jornada.'
+const SUBTEXT = 'O Cadu está aqui para te guiar na missão de hoje.'
 
 export function HomeIntroSpeech({ childName }: { childName?: string }) {
   const subWords = useMemo(() => SUBTEXT.split(' '), [])
@@ -32,9 +32,6 @@ export function HomeIntroSpeech({ childName }: { childName?: string }) {
       </p>
       <div className="home-intro__program" style={{ animationDelay: '2.6s' }}>
         <span className="home-intro__program-name">{childProfile.currentProgram}</span>
-        <span className="home-intro__program-week">
-          Semana {childProfile.currentWeek} de {childProfile.totalWeeks} · {childProfile.journeyProgress}% da trilha
-        </span>
       </div>
     </section>
   )

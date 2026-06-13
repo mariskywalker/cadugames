@@ -66,8 +66,24 @@ function getNodeState(index: number, actionId: string): StoneNodeState {
   return 'locked'
 }
 
-export function ValeProgressPath() {
-  const { editorMode, setEditorMode, message, setMessage } = useStoneNodeEditorMode()
+export function ValeProgressPath({
+  heroMode = false,
+  editorMode: editorModeProp,
+  setEditorMode: setEditorModeProp,
+  message: messageProp,
+  setMessage: setMessageProp,
+}: {
+  heroMode?: boolean
+  editorMode?: boolean
+  setEditorMode?: (active: boolean) => void
+  message?: string | null
+  setMessage?: (msg: string | null) => void
+}) {
+  const internal = useStoneNodeEditorMode()
+  const editorMode = editorModeProp ?? internal.editorMode
+  const setEditorMode = setEditorModeProp ?? internal.setEditorMode
+  const message = messageProp ?? internal.message
+  const setMessage = setMessageProp ?? internal.setMessage
   const islandLayout = useValeIslandEditorStore((s) => s.layout)
   const islandOverride = useValeIslandEditorStore((s) => s.override)
   const hydrateIsland = useValeIslandEditorStore((s) => s.hydrate)
@@ -97,6 +113,13 @@ export function ValeProgressPath() {
   useEffect(() => {
     setIslandEditorActive(editorMode)
   }, [editorMode, setIslandEditorActive])
+
+  useEffect(() => {
+    if (editorMode && heroMode) {
+      setSelectedId(ISLAND_EDITOR_ID)
+      setMessage('Editor ativo — aba 🏡 Casa para mover a Casa do Urso.')
+    }
+  }, [editorMode, heroMode, setMessage])
 
   const nodes = useMemo(
     () => (editorMode ? mergeStoneNodes(overrides) : STONE_NODES),
@@ -189,6 +212,8 @@ export function ValeProgressPath() {
     },
     [activeAction],
   )
+
+  if (heroMode && !editorMode) return null
 
   return (
     <>
@@ -312,7 +337,7 @@ export function ValeProgressPath() {
         )}
 
       <AnimatePresence>
-        {activeAction && !editorMode && (
+        {activeAction && !editorMode && !heroMode && (
           <ValeActionSheet
             action={activeAction}
             feedback={feedback}
@@ -325,7 +350,7 @@ export function ValeProgressPath() {
         )}
       </AnimatePresence>
 
-      {houseHubOpen && !editorMode && (
+      {houseHubOpen && !editorMode && !heroMode && (
         <CasaUrsoHubModal onClose={() => setHouseHubOpen(false)} />
       )}
     </>

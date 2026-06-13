@@ -4,6 +4,19 @@
  * Sem backend: tudo aqui até a Etapa 2.
  */
 
+export interface TodayMission {
+  title: string
+  objective: string
+  duration: string
+  ctaHref: string
+  ctaLabel: string
+}
+
+export interface FocusMeta {
+  program: string
+  practicing: string[]
+}
+
 export interface ChildJourneyProfile {
   id: string
   name: string
@@ -18,6 +31,25 @@ export interface ChildJourneyProfile {
   totalActivities: number
   lastActivity: { title: string; when: string; emoji: string }
 }
+
+export const todayMission: TodayMission = {
+  title: 'Responder perguntas simples',
+  objective: 'Treinar respostas curtas durante conversas.',
+  duration: '5 minutos',
+  ctaHref: '/child/life/comunicacao',
+  ctaLabel: 'Começar missão',
+}
+
+export const focusMeta: FocusMeta = {
+  program: 'Comunicação e Linguagem',
+  practicing: ['responder perguntas', 'fazer escolhas', 'pedir ajuda'],
+}
+
+export const familyTip =
+  'Experimente repetir a atividade durante o lanche ou banho.'
+
+/** Habilidades já consolidadas na trilha atual */
+export const trailConqueredSkills = ['Escolher entre opções', 'Nomear objetos']
 
 export const childProfile: ChildJourneyProfile = {
   id: 'lucas',
@@ -104,8 +136,9 @@ export const emotionContexts: EmotionContext[] = [
 export interface FamilyActivity {
   id: string
   title: string
+  skill: string
+  objective: string
   duration: string
-  goal: string
   materials: string
   howTo: string
   caduTip: string
@@ -117,8 +150,9 @@ export const familyActivities: FamilyActivity[] = [
   {
     id: 'caca-palavras',
     title: 'Caça às palavras pela casa',
+    skill: 'Comunicação',
+    objective: 'Nomear objetos do cotidiano',
     duration: '10 minutos',
-    goal: 'Comunicação e linguagem',
     materials: 'Objetos da casa',
     howTo:
       'Escolha 3 objetos e peça para Lucas nomear, apontar ou escolher entre duas opções.',
@@ -129,8 +163,9 @@ export const familyActivities: FamilyActivity[] = [
   {
     id: 'hora-historia',
     title: 'Hora da história com pausas',
+    skill: 'Comunicação',
+    objective: 'Manter atenção compartilhada em momentos curtos',
     duration: '15 minutos',
-    goal: 'Comunicação e atenção compartilhada',
     materials: 'Um livro ilustrado favorito',
     howTo:
       'Leia uma história conhecida e faça pausas para Lucas completar palavras ou apontar figuras.',
@@ -140,8 +175,9 @@ export const familyActivities: FamilyActivity[] = [
   {
     id: 'chef-ajudante',
     title: 'Pequeno chef ajudante',
+    skill: 'Autonomia',
+    objective: 'Seguir uma sequência simples com apoio mínimo',
     duration: '20 minutos',
-    goal: 'Autonomia e sequência de passos',
     materials: 'Lanche simples (pão, frutas)',
     howTo:
       'Montem um lanche juntos em 3 passos. Deixe Lucas escolher e executar uma parte sozinho.',
@@ -167,7 +203,7 @@ export const growthDomains: GrowthDomain[] = [
     name: 'Comunicação',
     emoji: '💬',
     progress: 80,
-    note: 'Lucas está ampliando respostas e iniciando mais interações.',
+    note: 'Lucas começou a responder mais perguntas espontaneamente.',
     color: '#5B9FFF',
   },
   {
@@ -175,7 +211,7 @@ export const growthDomains: GrowthDomain[] = [
     name: 'Autonomia',
     emoji: '🌱',
     progress: 65,
-    note: 'Já realiza a rotina da manhã com poucos lembretes.',
+    note: 'Lucas está ganhando confiança para fazer pequenas tarefas sozinho.',
     color: '#6BCB77',
   },
   {
@@ -183,7 +219,7 @@ export const growthDomains: GrowthDomain[] = [
     name: 'Socialização',
     emoji: '🤝',
     progress: 55,
-    note: 'Começou a procurar colegas para brincadeiras curtas.',
+    note: 'Lucas procurou colegas para brincar em momentos curtos.',
     color: '#B388FF',
   },
   {
@@ -191,7 +227,7 @@ export const growthDomains: GrowthDomain[] = [
     name: 'Regulação Emocional',
     emoji: '🫧',
     progress: 40,
-    note: 'Estamos observando padrões para apoiar momentos de ansiedade.',
+    note: 'Estamos observando momentos de ansiedade para entender padrões.',
     color: '#FF6B9D',
   },
   {
@@ -207,7 +243,7 @@ export const growthDomains: GrowthDomain[] = [
     name: 'Rotina',
     emoji: '🗓️',
     progress: 60,
-    note: 'O quadro visual de rotina está funcionando bem em casa.',
+    note: 'Lucas está seguindo partes da rotina com menos ajuda.',
     color: '#4ECDC4',
   },
 ]

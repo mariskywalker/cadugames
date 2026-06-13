@@ -333,11 +333,28 @@ export function StoneNodeEditorPanel({
             />
           </label>
           <label className="stone-editor-panel__field">
-            <span>rotate Y (deg)</span>
+            <span>rotate X — inclinar frente/trás (°)</span>
             <input
               type="range"
-              min={-45}
-              max={45}
+              min={-180}
+              max={180}
+              step={0.5}
+              value={islandLayout.rotationXDeg}
+              onChange={(e) => onPatchIsland({ rotationXDeg: +e.target.value })}
+            />
+            <input
+              type="number"
+              step={0.5}
+              value={islandLayout.rotationXDeg}
+              onChange={(e) => onPatchIsland({ rotationXDeg: +e.target.value })}
+            />
+          </label>
+          <label className="stone-editor-panel__field">
+            <span>rotate Y — girar completo (°)</span>
+            <input
+              type="range"
+              min={-180}
+              max={180}
               step={0.5}
               value={islandLayout.rotationYDeg}
               onChange={(e) => onPatchIsland({ rotationYDeg: +e.target.value })}
@@ -349,13 +366,30 @@ export function StoneNodeEditorPanel({
               onChange={(e) => onPatchIsland({ rotationYDeg: +e.target.value })}
             />
           </label>
+          <label className="stone-editor-panel__field">
+            <span>rotate Z — inclinar lateral (°)</span>
+            <input
+              type="range"
+              min={-180}
+              max={180}
+              step={0.5}
+              value={islandLayout.rotationZDeg}
+              onChange={(e) => onPatchIsland({ rotationZDeg: +e.target.value })}
+            />
+            <input
+              type="number"
+              step={0.5}
+              value={islandLayout.rotationZDeg}
+              onChange={(e) => onPatchIsland({ rotationZDeg: +e.target.value })}
+            />
+          </label>
           <code className="stone-editor-panel__readout">
-            X: {islandLayout.offsetX} · Y: {islandLayout.offsetY} · Z: {islandLayout.offsetZ} · rot:{' '}
-            {islandLayout.rotationYDeg}°
+            pos [{islandLayout.offsetX}, {islandLayout.offsetY}, {islandLayout.offsetZ}] · rot [
+            {islandLayout.rotationXDeg}°, {islandLayout.rotationYDeg}°, {islandLayout.rotationZDeg}°]
           </code>
           <p className="stone-editor-panel__subhint">
-            Profundidade: Z mais negativo = mais ao fundo · Z positivo = mais perto. O campo numérico
-            aceita qualquer valor (ex.: −8, −10).
+            Y = rotação completa ao redor · X/Z = inclinar. Campos numéricos aceitam qualquer grau
+            (ex.: 270, −120).
           </p>
         </div>
       )}

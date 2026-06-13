@@ -2,18 +2,19 @@
 
 import { CADU_LAYOUT, HOME_ASSETS } from '@/lib/home/assets'
 import { useParallaxPointer } from '@/hooks/home/useParallaxPointer'
-import { HomeChildProfileCard } from './HomeChildProfileCard'
+import { HomeMissionStack } from './HomeMissionStack'
+import { HomeAmbientLife } from './HomeAmbientLife'
 import { HomeIntroSpeech } from './HomeIntroSpeech'
 import { SkyFloatingClouds } from './SkyFloatingClouds'
+import { todayMission } from '@/lib/mockChildProfile'
 import type { ChildProfile } from '@/lib/types'
+import Link from 'next/link'
 
 export function HomeScene({
   child,
-  onContinueJourney,
   onExploreRoom,
 }: {
   child: ChildProfile
-  onContinueJourney: () => void
   onExploreRoom: () => void
 }) {
   const { rootRef, offset } = useParallaxPointer(6)
@@ -48,8 +49,9 @@ export function HomeScene({
       </div>
 
       <SkyFloatingClouds offset={offset} />
-      <HomeIntroSpeech />
-      <HomeChildProfileCard child={child} />
+      <HomeAmbientLife />
+      <HomeIntroSpeech childName={child.name} />
+      <HomeMissionStack />
 
       <div
         className="home-scene__cadu-wrap"
@@ -80,9 +82,9 @@ export function HomeScene({
       </div>
 
       <div className="home-scene__cta-group">
-        <button type="button" className="home-scene__cta" onClick={onContinueJourney}>
-          Continuar jornada
-        </button>
+        <Link href={todayMission.ctaHref} className="home-scene__cta">
+          {todayMission.ctaLabel}
+        </Link>
         <button
           type="button"
           className="home-scene__cta home-scene__cta--ghost"

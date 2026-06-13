@@ -41,11 +41,16 @@ function applyStageTransform(
   layout: IslandLayout,
   islandSize: number,
   offset: [number, number, number],
-  rotationY: number,
+  rotationDeg: { x: number; y: number; z: number },
 ) {
   const scale = islandSize / layout.maxXZ
   stage.scale.setScalar(scale)
-  stage.rotation.y = rotationY
+  stage.rotation.order = 'YXZ'
+  stage.rotation.set(
+    (rotationDeg.x * Math.PI) / 180,
+    (rotationDeg.y * Math.PI) / 180,
+    (rotationDeg.z * Math.PI) / 180,
+  )
   stage.position.set(
     -layout.center.x * scale + offset[0],
     -layout.minY * scale + offset[1],
@@ -79,9 +84,13 @@ export function ValeEnvironment() {
     ],
     [islandLayout.offsetX, islandLayout.offsetY, islandLayout.offsetZ],
   )
-  const rotationY = useMemo(
-    () => (islandLayout.rotationYDeg * Math.PI) / 180,
-    [islandLayout.rotationYDeg],
+  const rotationDeg = useMemo(
+    () => ({
+      x: islandLayout.rotationXDeg,
+      y: islandLayout.rotationYDeg,
+      z: islandLayout.rotationZDeg,
+    }),
+    [islandLayout.rotationXDeg, islandLayout.rotationYDeg, islandLayout.rotationZDeg],
   )
 
   useEffect(() => {
@@ -89,12 +98,12 @@ export function ValeEnvironment() {
     if (!stage) return
     const { islandSize } = computeValeComposition(size.width, size.height)
     islandSizeRef.current = islandSize
-    applyStageTransform(stage, layout, islandSize, offset, rotationY)
+    applyStageTransform(stage, layout, islandSize, offset, rotationDeg)
     valeTerrain.object = stage
     return () => {
       if (valeTerrain.object === stage) valeTerrain.object = null
     }
-  }, [layout, size.height, size.width, offset, rotationY])
+  }, [layout, size.height, size.width, offset, rotationDeg])
 
   useFrame(() => {
     const stage = stageRef.current
@@ -104,7 +113,7 @@ export function ValeEnvironment() {
     const sizeChanged = Math.abs(islandSize - islandSizeRef.current) >= 0.02
     if (!sizeChanged) return
     islandSizeRef.current = islandSize
-    applyStageTransform(stage, current, islandSize, offset, rotationY)
+    applyStageTransform(stage, current, islandSize, offset, rotationDeg)
   })
 
   return (

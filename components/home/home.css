@@ -300,7 +300,32 @@
   }
 }
 
-/* ─── Card perfil criança ─── */
+/* ─── Missão orientada (home) ─── */
+.home-mission-stack {
+  position: absolute;
+  right: max(var(--home-topbar-inset-x), env(safe-area-inset-right));
+  top: calc(var(--home-topbar-h) + 10px);
+  bottom: max(100px, calc(env(safe-area-inset-bottom) + 88px));
+  z-index: 11;
+  width: min(320px, 38vw);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  pointer-events: auto;
+  overflow: visible;
+}
+
+.home-mission-card {
+  flex-shrink: 0;
+}
+
+.home-scene__cta {
+  text-decoration: none;
+  text-align: center;
+}
+
+/* ─── Card perfil criança (legado) ─── */
 .home-child-card {
   position: absolute;
   right: max(var(--home-topbar-inset-x), env(safe-area-inset-right));
@@ -605,6 +630,16 @@
     width: min(280px, 78vw);
     max-width: 280px;
     transform: translateX(calc(-100% - clamp(72px, 18vw, 110px)));
+  }
+
+  .home-mission-stack {
+    left: 50%;
+    right: auto;
+    width: min(300px, 92vw);
+    transform: translateX(-50%);
+    top: auto;
+    bottom: max(118px, calc(env(safe-area-inset-bottom) + 104px));
+    max-height: none;
   }
 
   .home-child-card {

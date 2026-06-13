@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import type { LifeDimension } from '@/lib/types'
 import { tatoLines } from '@/lib/lifeSliceData'
 import { TatoGuide } from './TatoGuide'
+import { WorldPreviewDiorama } from '@/components/worlds/WorldPreviewDiorama'
 
 export function WorldLocked({ dimension }: { dimension: LifeDimension }) {
   return (
@@ -30,6 +31,8 @@ export function WorldLocked({ dimension }: { dimension: LifeDimension }) {
       </motion.div>
 
       <TatoGuide message={tatoLines.worldLocked} />
+
+      <WorldPreviewDiorama dimension={dimension} />
     </div>
   )
 }

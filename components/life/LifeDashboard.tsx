@@ -3,7 +3,8 @@
 import { motion } from 'framer-motion'
 import { tatoLines } from '@/lib/lifeSliceData'
 import { childProfile } from '@/lib/mockChildProfile'
-import { CurrentGoalCard, WorldStatusList } from './CurrentGoalCard'
+import { JourneyTrailBlock } from './JourneyTrailBlock'
+import { WorldStatusList } from './CurrentGoalCard'
 import { TatoGuide } from './TatoGuide'
 import { WorldMap } from './WorldMap'
 
@@ -23,15 +24,15 @@ export function LifeDashboard() {
             Minha Jornada
           </h1>
           <p className="text-cadu-muted mt-1.5">
-            Oi {childProfile.name}, explore os mundos e descubra novos caminhos.
+            Oi {childProfile.name}, veja onde você está e o que vem a seguir.
           </p>
         </motion.div>
 
-        <CurrentGoalCard />
+        <JourneyTrailBlock />
 
         <TatoGuide message={tatoLines.map} />
 
-        <p className="text-base font-semibold uppercase tracking-wide text-cadu-muted/90">
+        <p className="text-sm font-semibold uppercase tracking-wide text-cadu-muted/80 pt-2">
           Mapa dos mundos
         </p>
       </div>

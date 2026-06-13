@@ -161,8 +161,8 @@
   inset: 0;
   z-index: 0;
   background-color: #c8a8b0;
-  background-position: center 42%;
-  background-size: cover;
+  background-position: 56% 34%;
+  background-size: 112% auto;
   background-repeat: no-repeat;
 }
 
@@ -1221,7 +1221,7 @@ body.vale-flower-editor-active .vale-page--hero .vale-scene__host {
   position: fixed;
   right: 16px;
   top: 72px;
-  z-index: 60;
+  z-index: 100;
   width: min(360px, calc(100vw - 24px));
   max-height: calc(100vh - 96px);
   overflow-y: auto;
@@ -1620,7 +1620,7 @@ body.vale-focus-editor-active {
   position: fixed;
   right: 16px;
   top: max(72px, env(safe-area-inset-top));
-  z-index: 60;
+  z-index: 100;
   width: min(320px, calc(100vw - 24px));
   max-height: calc(100vh - 96px);
   overflow-y: auto;
@@ -1800,6 +1800,24 @@ body.vale-flower-editor-active {
   user-select: none;
 }
 
+/* Painel P acima dos hotspots de interação (z 65) */
+body.vale-flower-editor-active .vale-world-interactions--ui {
+  pointer-events: none !important;
+}
+
+body.vale-flower-editor-active .vale-world-interactions--ui .world-interaction-hotspot {
+  pointer-events: none !important;
+}
+
+body.vale-stone-editor-active .vale-world-interactions--ui,
+body.vale-stone-editor-active .vale-world-interactions--ui .world-interaction-hotspot,
+body.vale-prop-editor-active .vale-world-interactions--ui,
+body.vale-prop-editor-active .vale-world-interactions--ui .world-interaction-hotspot,
+body.vale-camera-editor-active .vale-world-interactions--ui,
+body.vale-camera-editor-active .vale-world-interactions--ui .world-interaction-hotspot {
+  pointer-events: none !important;
+}
+
 body.vale-flower-editor-active .vale-scene__canvas {
   cursor: grab;
 }
@@ -1860,7 +1878,7 @@ body.vale-flower-editor-active .vale-scene__canvas:active {
   position: fixed;
   left: 16px;
   bottom: max(16px, env(safe-area-inset-bottom));
-  z-index: 60;
+  z-index: 100;
   width: min(320px, calc(100vw - 24px));
   padding: 0.85rem 1rem 1rem;
   border-radius: 14px;
@@ -2000,5 +2018,239 @@ body.vale-flower-editor-active .vale-scene__canvas:active {
 }
 
 body.vale-prop-editor-active {
+  user-select: none;
+}
+
+/* Editor de câmera — tecla C ou ?camera=1 */
+.vale-camera-status {
+  position: fixed;
+  top: max(14px, env(safe-area-inset-top));
+  left: 50%;
+  z-index: 65;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  background: rgba(255, 248, 240, 0.94);
+  border: 1px solid rgba(180, 140, 90, 0.45);
+  box-shadow: 0 8px 28px rgba(40, 22, 14, 0.18);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #6a4838;
+  pointer-events: none;
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.vale-camera-status--ok {
+  background: rgba(232, 252, 236, 0.96);
+  border-color: rgba(72, 160, 96, 0.55);
+  color: #1f6a38;
+}
+
+.vale-camera-status--celebrate {
+  animation: vale-camera-good-pop 0.55s cubic-bezier(0.22, 1.35, 0.36, 1);
+}
+
+.vale-camera-status__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 50%;
+  background: rgba(120, 90, 70, 0.12);
+  font-size: 0.78rem;
+}
+
+.vale-camera-status--ok .vale-camera-status__icon {
+  background: rgba(48, 140, 72, 0.18);
+}
+
+@keyframes vale-camera-good-pop {
+  0% {
+    transform: translateX(-50%) scale(0.92);
+  }
+  45% {
+    transform: translateX(-50%) scale(1.06);
+  }
+  100% {
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+.vale-camera-editor-panel {
+  position: fixed;
+  right: 16px;
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 100;
+  width: min(340px, calc(100vw - 24px));
+  max-height: min(78dvh, 640px);
+  overflow: auto;
+  padding: 0.85rem 1rem 1rem;
+  border-radius: 14px;
+  background: rgba(255, 252, 248, 0.96);
+  border: 1px solid rgba(180, 140, 90, 0.35);
+  box-shadow: 0 12px 40px rgba(40, 22, 14, 0.22);
+  font-size: 0.78rem;
+  color: #4a3028;
+}
+
+.vale-camera-editor-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.vale-camera-editor-panel__title {
+  font-weight: 800;
+  font-size: 0.88rem;
+}
+
+.vale-camera-editor-panel__close {
+  border: none;
+  background: transparent;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #8a6050;
+}
+
+.vale-camera-editor-panel__hint {
+  margin: 0 0 0.65rem;
+  color: #7a5848;
+  line-height: 1.4;
+}
+
+.vale-camera-editor-panel__hint kbd {
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  background: #f0e4dc;
+  font-size: 0.72rem;
+}
+
+.vale-camera-editor-panel__tabs {
+  display: flex;
+  gap: 0.35rem;
+  margin-bottom: 0.65rem;
+}
+
+.vale-camera-editor-panel__tab {
+  flex: 1;
+  padding: 0.4rem 0.55rem;
+  border-radius: 8px;
+  border: 1px solid rgba(160, 120, 100, 0.35);
+  background: #faf4ef;
+  color: #5a4038;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.vale-camera-editor-panel__tab.is-active {
+  background: #ffe8dc;
+  border-color: rgba(220, 140, 100, 0.55);
+}
+
+.vale-camera-editor-panel__checks {
+  list-style: none;
+  margin: 0 0 0.65rem;
+  padding: 0.45rem 0.55rem;
+  border-radius: 10px;
+  background: #f8f0ea;
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+}
+
+.vale-camera-editor-panel__check {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #9a7060;
+}
+
+.vale-camera-editor-panel__check.is-pass {
+  color: #2d7a48;
+}
+
+.vale-camera-editor-panel__check.is-fail {
+  color: #a05848;
+}
+
+.vale-camera-editor-panel__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin-bottom: 0.55rem;
+}
+
+.vale-camera-editor-panel__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.vale-camera-editor-panel__field-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.45rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.vale-camera-editor-panel__field-head input[type='number'] {
+  width: 4.2rem;
+  padding: 0.25rem 0.35rem;
+  border-radius: 8px;
+  border: 1px solid rgba(160, 120, 100, 0.4);
+  font-size: 0.72rem;
+  text-align: right;
+}
+
+.vale-camera-editor-panel__field input[type='range'] {
+  width: 100%;
+  accent-color: #c89050;
+}
+
+.vale-camera-editor-panel__msg {
+  margin: 0 0 0.5rem;
+  color: #6a8848;
+  font-weight: 600;
+}
+
+.vale-camera-editor-panel__actions {
+  display: flex;
+  gap: 0.45rem;
+}
+
+.vale-camera-editor-panel__btn {
+  padding: 0.4rem 0.65rem;
+  border-radius: 8px;
+  border: none;
+  background: #c89050;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+
+.vale-camera-editor-panel__btn--ok {
+  background: #3a9a58;
+}
+
+.vale-camera-editor-panel__btn--ghost {
+  background: transparent;
+  color: #7a5040;
+  border: 1px solid rgba(160, 120, 100, 0.45);
+}
+
+body.vale-camera-editor-active {
   user-select: none;
 }

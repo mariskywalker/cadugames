@@ -2,20 +2,37 @@
 
 import dynamic from 'next/dynamic'
 import { useEffect, useMemo, useState, type CSSProperties } from 'react'
+import { useCameraEditorMode } from '@/hooks/vale/useCameraEditorMode'
 import { useFocusSpotEditorMode } from '@/hooks/vale/useFocusSpotEditorMode'
 import { useFlowerEditorMode } from '@/hooks/vale/useFlowerEditorMode'
 import { usePropEditorMode } from '@/hooks/vale/usePropEditorMode'
 import { loadMergedFocusSpots } from '@/lib/vale/focusSpotEditorStorage'
 import { focusSpotsToCssVars, type FocusSpot } from '@/lib/vale/focusSpotLayout'
-import { VALE_SCENE_ZOOM } from '@/lib/vale/valeSceneLayout'
+import { useValeCameraEditorStore } from '@/store/useValeCameraEditorStore'
+import { useValeIslandEditorStore } from '@/store/useValeIslandEditorStore'
 import { VALE_HERO_MODE, VALE_REFERENCE_BG, VALE_USE_REFERENCE_BG } from '@/lib/vale/valeWorld'
+import { ValeCameraEditorPanel } from './ValeCameraEditorPanel'
 import { ValeFlowerEditorPanel } from './ValeFlowerEditorPanel'
 import { ValeFocusSpotEditor } from './ValeFocusSpotEditor'
 import { ValeHeroHousePrompt } from './ValeHeroHousePrompt'
 import { ValePropEditorPanel } from './ValePropEditorPanel'
+import { ValeProgressPath } from './ValeProgressPath'
 import { ValeSceneProps } from './ValeSceneProps'
 import { ValeUIOverlay } from './ValeUIOverlay'
+import { useStoneNodeEditorMode } from '@/hooks/vale/useStoneNodeEditorMode'
+import '@/components/worlds/world-interactions.css'
 import './vale.css'
+
+const WorldInteractionLayer = dynamic(
+  () =>
+    import('@/components/worlds/WorldInteractionLayer').then((m) => m.WorldInteractionLayer),
+  { ssr: false },
+)
+
+const HubPointEditorTools = dynamic(
+  () => import('@/components/worlds/HubPointEditorTools').then((m) => m.HubPointEditorTools),
+  { ssr: false },
+)
 
 const ValeWorldScene = dynamic(() => import('./ValeWorldScene'), {
   ssr: false,
@@ -30,6 +47,12 @@ const ValeWorldScene = dynamic(() => import('./ValeWorldScene'), {
 export function ValeExperience() {
   const { editorMode, setEditorMode, message, setMessage } = useFocusSpotEditorMode()
   const {
+    editorMode: cameraEditorMode,
+    setEditorMode: setCameraEditorMode,
+    message: cameraMessage,
+    setMessage: setCameraMessage,
+  } = useCameraEditorMode()
+  const {
     editorMode: flowerEditorMode,
     setEditorMode: setFlowerEditorMode,
     message: flowerMessage,
@@ -41,7 +64,16 @@ export function ValeExperience() {
     message: propMessage,
     setMessage: setPropMessage,
   } = usePropEditorMode()
+  const { editorMode: layoutEditorMode, setEditorMode: setLayoutEditorMode, message: layoutMessage, setMessage: setLayoutMessage } = useStoneNodeEditorMode()
   const [focusSpots, setFocusSpots] = useState<FocusSpot[]>(() => loadMergedFocusSpots())
+  const cameraLayout = useValeCameraEditorStore((s) => s.layout)
+  const hydrateCamera = useValeCameraEditorStore((s) => s.hydrate)
+  const hydrateIsland = useValeIslandEditorStore((s) => s.hydrate)
+
+  useEffect(() => {
+    hydrateCamera()
+    hydrateIsland()
+  }, [hydrateCamera, hydrateIsland])
 
   useEffect(() => {
     setFocusSpots(loadMergedFocusSpots())
@@ -64,6 +96,8 @@ export function ValeExperience() {
     editorMode ? 'vale-page--focus-editor' : '',
     flowerEditorMode ? 'vale-page--flower-editor' : '',
     propEditorMode ? 'vale-page--prop-editor' : '',
+    cameraEditorMode ? 'vale-page--camera-editor' : '',
+    layoutEditorMode ? 'vale-page--stone-editor' : '',
   ]
     .filter(Boolean)
     .join(' ')
@@ -81,8 +115,8 @@ export function ValeExperience() {
       <div
         className="vale-scene"
         style={{
-          transform: `scale(${VALE_SCENE_ZOOM.scale})`,
-          transformOrigin: `${VALE_SCENE_ZOOM.originX} ${VALE_SCENE_ZOOM.originY}`,
+          transform: `scale(${cameraLayout.sceneScale})`,
+          transformOrigin: `${cameraLayout.sceneOriginX}% ${cameraLayout.sceneOriginY}%`,
         }}
       >
         {VALE_USE_REFERENCE_BG ? (
@@ -99,6 +133,15 @@ export function ValeExperience() {
           <div className="vale-page__bg" aria-hidden />
         )}
         {VALE_HERO_MODE && <ValeSceneProps />}
+        {VALE_HERO_MODE && (
+          <ValeProgressPath
+            heroMode
+            editorMode={layoutEditorMode}
+            setEditorMode={setLayoutEditorMode}
+            message={layoutMessage}
+            setMessage={setLayoutMessage}
+          />
+        )}
         {VALE_HERO_MODE && VALE_USE_REFERENCE_BG && (
           <div className="vale-ground-fog" aria-hidden />
         )}
@@ -141,7 +184,19 @@ export function ValeExperience() {
                 setPropMessage(null)
               }}
             />
+            <ValeCameraEditorPanel
+              editorMode={cameraEditorMode}
+              message={cameraMessage}
+              onClose={() => {
+                setCameraEditorMode(false)
+                setCameraMessage(null)
+              }}
+            />
             <ValeHeroHousePrompt />
+            <div className="vale-world-interactions vale-world-interactions--ui">
+              <WorldInteractionLayer worldId="vale" />
+            </div>
+            <HubPointEditorTools />
           </>
         )}
         {!VALE_HERO_MODE && <ValeUIOverlay />}

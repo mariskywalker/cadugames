@@ -36,12 +36,12 @@ export const useValeIslandEditorStore = create<ValeIslandEditorStore>((set, get)
   },
 
   setEditorActive: (active) => {
-    if (active) {
-      const override = loadIslandOverride()
-      set({ editorActive: true, override, layout: mergeIslandLayout(override) })
-      return
-    }
-    set({ editorActive: false, override: {}, layout: DEFAULT_ISLAND_LAYOUT })
+    const override = loadIslandOverride()
+    set({
+      editorActive: active,
+      override,
+      layout: mergeIslandLayout(override),
+    })
   },
 
   patch: (patch) => {

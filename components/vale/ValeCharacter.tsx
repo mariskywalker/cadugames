@@ -20,7 +20,9 @@ import {
   VALE_BEAR_HERO,
   VALE_CHARACTER_FOOT_OFFSET,
   VALE_CHARACTER_SCALE,
+  VALE_CHARACTER_Y_LIFT,
   VALE_GROUND_RAY_MAX_Y,
+  VALE_HERO_GROUND_RAY_MAX_Y,
   VALE_HERO_MODE,
   VALE_PATH_GROUND_Y,
   VALE_SPAWN,
@@ -42,14 +44,36 @@ const rayOrigin = new THREE.Vector3()
 const RAY_DOWN = new THREE.Vector3(0, -1, 0)
 
 /** Ignora telhado/paredes — usa o ponto de chão mais alto abaixo do teto do raycast */
-function sampleWalkableGroundY(hits: THREE.Intersection[]) {
+function sampleWalkableGroundY(hits: THREE.Intersection[], maxY = VALE_GROUND_RAY_MAX_Y) {
   let best: number | null = null
   for (const hit of hits) {
     const y = hit.point.y
-    if (y > VALE_GROUND_RAY_MAX_Y) continue
+    if (y > maxY) continue
     if (best === null || y > best) best = y
   }
   return best
+}
+
+function sampleHeroGroundY(x: number, z: number) {
+  const rampY = getValeHeroGroundY(x, z)
+
+  if (!valeTerrain.object) {
+    return rampY + VALE_CHARACTER_Y_LIFT
+  }
+
+  rayOrigin.set(x, 30, z)
+  terrainRay.set(rayOrigin, RAY_DOWN)
+  const meshY = sampleWalkableGroundY(
+    terrainRay.intersectObject(valeTerrain.object, true),
+    VALE_HERO_GROUND_RAY_MAX_Y,
+  )
+
+  if (meshY === null) {
+    return rampY + VALE_CHARACTER_Y_LIFT
+  }
+
+  // GLB manda nos degraus; rampa só evita afundar entre amostras
+  return Math.max(rampY, meshY) + VALE_CHARACTER_Y_LIFT
 }
 
 export function ValeCharacter() {
@@ -180,7 +204,7 @@ export function ValeCharacter() {
     let targetGroundY = groundYRef.current
 
     if (VALE_HERO_MODE) {
-      targetGroundY = getValeHeroGroundY(g.position.x, g.position.z)
+      targetGroundY = sampleHeroGroundY(g.position.x, g.position.z)
     } else if (moved && valeTerrain.object) {
       rayOrigin.set(g.position.x, 30, g.position.z)
       terrainRay.set(rayOrigin, RAY_DOWN)
@@ -198,7 +222,7 @@ export function ValeCharacter() {
     }
 
     groundYRef.current = targetGroundY
-    g.position.y = THREE.MathUtils.lerp(g.position.y, targetGroundY, VALE_HERO_MODE ? 0.28 : 0.18)
+    g.position.y = THREE.MathUtils.lerp(g.position.y, targetGroundY, VALE_HERO_MODE ? 0.32 : 0.18)
 
     valeCharacterWorldPos.set(g.position.x, g.position.y, g.position.z)
 

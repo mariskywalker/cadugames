@@ -31,9 +31,26 @@ function ActivityCard({
                 </span>
               )}
             </div>
-            <p className="mt-0.5 text-xs font-bold text-cadu-muted">
-              ⏱️ {activity.duration} · 🎯 {activity.goal}
-            </p>
+            <div className="mt-3 grid gap-2 sm:grid-cols-3">
+              <div className="rounded-2xl bg-cadu-cream px-3 py-2">
+                <p className="text-[11px] font-extrabold uppercase tracking-wide text-cadu-muted">
+                  Habilidade
+                </p>
+                <p className="mt-0.5 text-sm font-semibold text-cadu-ink">{activity.skill}</p>
+              </div>
+              <div className="rounded-2xl bg-cadu-cream px-3 py-2 sm:col-span-2">
+                <p className="text-[11px] font-extrabold uppercase tracking-wide text-cadu-muted">
+                  Objetivo
+                </p>
+                <p className="mt-0.5 text-sm font-semibold text-cadu-ink">{activity.objective}</p>
+              </div>
+              <div className="rounded-2xl bg-cadu-cream px-3 py-2">
+                <p className="text-[11px] font-extrabold uppercase tracking-wide text-cadu-muted">
+                  Duração
+                </p>
+                <p className="mt-0.5 text-sm font-semibold text-cadu-ink">{activity.duration}</p>
+              </div>
+            </div>
           </div>
         </div>
 

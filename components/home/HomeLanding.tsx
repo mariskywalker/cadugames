@@ -24,11 +24,6 @@ export function HomeLanding() {
     router.push('/opening')
   }, [router, setMode])
 
-  const goToJourney = useCallback(() => {
-    setMode('child')
-    router.push('/child/life')
-  }, [router, setMode])
-
   const onTab = useCallback(
     (tab: HomeTabId) => {
       setActiveTab(tab)
@@ -46,7 +41,7 @@ export function HomeLanding() {
     <div className="home-landing">
       <HomeTopBar child={child} />
       <div className="home-landing__scene">
-        <HomeScene child={child} onContinueJourney={goToJourney} onExploreRoom={goToOpening} />
+        <HomeScene child={child} onExploreRoom={goToOpening} />
       </div>
       <HomeBottomNav activeTab={activeTab} onTab={onTab} />
     </div>

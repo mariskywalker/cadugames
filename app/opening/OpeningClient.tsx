@@ -5,11 +5,23 @@ import Link from 'next/link'
 import { OpeningSplash } from '@/components/opening/OpeningSplash'
 import { ROOM_STUDIO_GRADIENT_CSS } from '@/lib/opening/roomBackdrop'
 import { childProfile } from '@/lib/mockChildProfile'
+import '@/components/worlds/world-interactions.css'
 
 const OpeningScene = dynamic(() => import('@/components/opening/OpeningScene'), {
   ssr: false,
   loading: () => <OpeningSplash />,
 })
+
+const WorldInteractionLayer = dynamic(
+  () =>
+    import('@/components/worlds/WorldInteractionLayer').then((m) => m.WorldInteractionLayer),
+  { ssr: false },
+)
+
+const HubPointEditorTools = dynamic(
+  () => import('@/components/worlds/HubPointEditorTools').then((m) => m.HubPointEditorTools),
+  { ssr: false },
+)
 
 const CHOICES = [
   { href: '/child/life', emoji: '🗺️', label: 'Minha Jornada' },
@@ -22,6 +34,9 @@ export function OpeningClient() {
     <div className="opening-page">
       <div className="opening-page__bg" style={{ background: ROOM_STUDIO_GRADIENT_CSS }} aria-hidden />
       <OpeningScene />
+      <div className="opening-interactions">
+        <WorldInteractionLayer worldId="sensory" />
+      </div>
       <div className="opening-page__vignette" aria-hidden />
 
       <header className="opening-page__speech" aria-label="Fala do Cadu">
@@ -41,11 +56,12 @@ export function OpeningClient() {
             </Link>
           ))}
         </nav>
-        <p className="opening-page__subtitle">Clique no chão para o urso explorar a sala</p>
+        <p className="opening-page__subtitle">Toque nos objetos da sala ou clique no chão para explorar</p>
         <Link href="/" className="opening-page__cta">
           Voltar ao início
         </Link>
       </footer>
+      <HubPointEditorTools />
     </div>
   )
 }

@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useState } from 'react'
+import { createPortal } from 'react-dom'
 import {
   clampFlowerDepth,
   formatFlowerPlacementsExport,
@@ -67,7 +68,7 @@ export function ValeFlowerEditorPanel({
 
   const [x, y, z] = selected.position
 
-  return (
+  const panel = (
     <div className="vale-flower-editor-panel" role="dialog" aria-label="Editor de plantas">
       <div className="vale-flower-editor-panel__header">
         <span className="vale-flower-editor-panel__title">Cenário do Vale</span>
@@ -221,4 +222,7 @@ export function ValeFlowerEditorPanel({
       </div>
     </div>
   )
+
+  if (typeof document === 'undefined') return null
+  return createPortal(panel, document.body)
 }
