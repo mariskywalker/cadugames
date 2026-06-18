@@ -90,15 +90,11 @@ export function ValeProgressPath({
   const setIslandEditorActive = useValeIslandEditorStore((s) => s.setEditorActive)
   const patchIsland = useValeIslandEditorStore((s) => s.patch)
   const resetIsland = useValeIslandEditorStore((s) => s.reset)
-  const [overrides, setOverrides] = useState<StoneNodeOverrides>(() => loadStoneNodeOverrides())
-  const [pathLayerOverride, setPathLayerOverride] = useState<PathLayerOverride>(() =>
-    loadPathLayerOverride(),
-  )
-  const [pathLayerCopyOverride, setPathLayerCopyOverride] = useState<PathLayerOverride>(() =>
-    loadPathLayerCopyOverride(),
-  )
-  const [assetSrc, setAssetSrc] = useState(() => loadPathLayerAssetSrc())
-  const [copyAssetSrc, setCopyAssetSrc] = useState(() => loadPathLayerCopyAssetSrc())
+  const [overrides, setOverrides] = useState<StoneNodeOverrides>({})
+  const [pathLayerOverride, setPathLayerOverride] = useState<PathLayerOverride>({})
+  const [pathLayerCopyOverride, setPathLayerCopyOverride] = useState<PathLayerOverride>({})
+  const [assetSrc, setAssetSrc] = useState<string>(PATH_LAYER_ASSET.src)
+  const [copyAssetSrc, setCopyAssetSrc] = useState<string>(PATH_LAYER_COPY_ASSET.src)
   const [assetVersion, setAssetVersion] = useState(0)
   const [copyAssetVersion, setCopyAssetVersion] = useState(0)
   const [selectedId, setSelectedId] = useState(PATH_LAYER_ID)
@@ -108,6 +104,11 @@ export function ValeProgressPath({
 
   useEffect(() => {
     hydrateIsland()
+    setOverrides(loadStoneNodeOverrides())
+    setPathLayerOverride(loadPathLayerOverride())
+    setPathLayerCopyOverride(loadPathLayerCopyOverride())
+    setAssetSrc(loadPathLayerAssetSrc())
+    setCopyAssetSrc(loadPathLayerCopyAssetSrc())
   }, [hydrateIsland])
 
   useEffect(() => {

@@ -10,7 +10,9 @@ export default function ChildLayout({ children }: { children: React.ReactNode })
   const router = useRouter()
   const pathname = usePathname()
   const isLife = pathname?.startsWith('/child/life')
-  const isComunicacao = pathname === '/child/life/comunicacao'
+  const isMusicIsland = pathname === '/child/life/ilha-dos-sons'
+  const isImmersiveWorld =
+    pathname === '/child/life/comunicacao' || isMusicIsland
   const variant = isLife ? 'life' : 'default'
 
   useEffect(() => {
@@ -22,9 +24,9 @@ export default function ChildLayout({ children }: { children: React.ReactNode })
 
   return (
     <AppShell
-      showStatus={!isComunicacao}
+      showStatus={!isImmersiveWorld}
       showStats={!isLife}
-      showNav
+      showNav={!isMusicIsland}
       variant={variant}
     >
       {children}

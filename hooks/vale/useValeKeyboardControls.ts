@@ -7,7 +7,6 @@ import type { Group } from 'three'
 import { useValeStore } from '@/store/useValeStore'
 
 const MOVE_KEYS = new Set(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'])
-const LOOK_AHEAD = 4.5
 
 function isTypingInField(target: EventTarget | null) {
   const el = target as HTMLElement | null
@@ -16,7 +15,7 @@ function isTypingInField(target: EventTarget | null) {
   return tag === 'INPUT' || tag === 'TEXTAREA' || el.isContentEditable
 }
 
-/** Setas do teclado — define destino contínuo para a locomoção do urso */
+/** Setas — movimento contínuo (melhor nos degraus do GLB) */
 export function useValeKeyboardControls({
   groupRef,
   enabled = true,
@@ -69,14 +68,13 @@ export function useValeKeyboardControls({
       window.removeEventListener('keyup', onKeyUp, true)
       window.removeEventListener('blur', onBlur)
     }
-  }, [clearTarget, enabled])
+  }, [clearTarget, enabled, groupRef, setWalkTarget])
 
   useFrame(() => {
     if (!enabled) return
 
-    const group = groupRef.current
     const pressed = pressedRef.current
-    if (!group || pressed.size === 0) return
+    if (pressed.size === 0) return
 
     let dx = 0
     let dz = 0
@@ -88,13 +86,11 @@ export function useValeKeyboardControls({
     const len = Math.hypot(dx, dz)
     if (len < 0.01) return
 
-    dx /= len
-    dz /= len
-
-    setWalkTarget(
-      group.position.x + dx * LOOK_AHEAD,
-      group.position.z + dz * LOOK_AHEAD,
-      { run: shiftRef.current },
-    )
+    const group = groupRef.current
+    if (!group) return
+    const step = 0.1 * (shiftRef.current ? 1.5 : 1)
+    setWalkTarget(group.position.x + (dx / len) * step, group.position.z + (dz / len) * step, {
+      run: shiftRef.current,
+    })
   })
 }

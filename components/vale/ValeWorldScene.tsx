@@ -1,5 +1,6 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import { ContactShadows, Loader } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 import { Component, Suspense, useEffect, type ReactNode } from 'react'
@@ -10,12 +11,22 @@ import { ValeBackdrop } from './ValeBackdrop'
 import { ValeCharacter } from './ValeCharacter'
 import { ValeClouds } from './ValeClouds'
 import { ValeComposition } from './ValeComposition'
+
+const ValeHotspotPathDebug = dynamic(
+  () => import('./ValeHotspotPathDebug').then((m) => m.ValeHotspotPathDebug),
+  { ssr: false },
+)
+const ValeHotspotPathProjectionBridge = dynamic(
+  () => import('./ValeHotspotPathProjectionBridge').then((m) => m.ValeHotspotPathProjectionBridge),
+  { ssr: false },
+)
 import { ValeEnvironment } from './ValeEnvironment'
-import { ValeLandmarks } from './ValeLandmarks'
 import { ValeLights } from './ValeLights'
 import { ValeNavFloor } from './ValeNavFloor'
 import { ValeParticles } from './ValeParticles'
 import { ValeSceneFlowers } from './ValeSceneFlowers'
+import { ValeWalkablePath } from './ValeWalkablePath'
+import { ValeWalkPathEditor } from './ValeWalkPathEditor'
 
 class ValeErrorBoundary extends Component<{ children: ReactNode }, { error: string | null }> {
   state = { error: null as string | null }
@@ -84,9 +95,10 @@ export default function ValeWorldScene() {
           <ValeLights />
           <Suspense fallback={null}>
             <ValeEnvironment />
+            <ValeWalkablePath />
+            <ValeWalkPathEditor />
             <ValeSceneFlowers />
             {showCharacter && <ValeCharacter />}
-            <ValeLandmarks />
           </Suspense>
           {!VALE_USE_REFERENCE_BG && <ValeClouds />}
           <ValeParticles heroMode={VALE_HERO_MODE} />
@@ -102,6 +114,8 @@ export default function ValeWorldScene() {
             />
           )}
           <ValeComposition />
+          <ValeHotspotPathDebug />
+          <ValeHotspotPathProjectionBridge />
         </Canvas>
         <Loader
           containerStyles={{

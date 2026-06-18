@@ -4,6 +4,7 @@ import { FloatingIsland } from './FloatingIsland'
 import {
   CidadeAmigosIsland,
   FlorestaEmocoesIsland,
+  IlhaDosSonsIsland,
   MontanhaRotinaIsland,
   ValeDasPalavrasIsland,
 } from './islandSvgs'
@@ -44,6 +45,18 @@ export function WorldMap() {
         width="min(72vw, 360px)"
       >
         <ValeDasPalavrasIsland />
+      </FloatingIsland>
+
+      <FloatingIsland
+        name="Ilha dos Sons"
+        subtitle="Ritmo, escuta e expressão"
+        available
+        href="/child/life/ilha-dos-sons"
+        left="12%"
+        top="42%"
+        width="min(46vw, 220px)"
+      >
+        <IlhaDosSonsIsland />
       </FloatingIsland>
 
       {futureIslands.map((island) => (

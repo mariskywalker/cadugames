@@ -68,7 +68,7 @@ export const childProfile: ChildJourneyProfile = {
 
 /* ─── Mundos da jornada ─── */
 
-export type WorldStatus = 'active' | 'next' | 'locked'
+export type WorldStatus = 'active' | 'available' | 'next' | 'locked'
 
 export interface JourneyWorld {
   id: string
@@ -76,6 +76,11 @@ export interface JourneyWorld {
   status: WorldStatus
   description: string
   href: string | null
+  domain?: string
+  assetType?: 'spline' | 'glb' | 'static'
+  scenePath?: string
+  sceneEmbedUrl?: string
+  tagline?: string
 }
 
 export const journeyWorlds: JourneyWorld[] = [
@@ -85,6 +90,18 @@ export const journeyWorlds: JourneyWorld[] = [
     status: 'active',
     description: 'Comunicação e linguagem — nomear, pedir e responder.',
     href: '/child/life/comunicacao',
+  },
+  {
+    id: 'ilha-dos-sons',
+    name: 'Ilha dos Sons',
+    status: 'available',
+    description: 'Ritmo, escuta e expressão — musicoterapia com o Cadu.',
+    href: '/child/life/ilha-dos-sons',
+    domain: 'Musicoterapia',
+    assetType: 'spline',
+    scenePath: '/worlds/music/floating_music_island.spline',
+    sceneEmbedUrl: 'https://my.spline.design/floatingmusicisland-IZycUWo0zM9naOmZ9jfIgzws/',
+    tagline: 'Ritmo, escuta e expressão',
   },
   {
     id: 'montanha-rotina',
@@ -111,6 +128,7 @@ export const journeyWorlds: JourneyWorld[] = [
 
 export const worldStatusMeta: Record<WorldStatus, { label: string; emoji: string }> = {
   active: { label: 'Ativo', emoji: '🌟' },
+  available: { label: 'Disponível', emoji: '🎵' },
   next: { label: 'Próximo', emoji: '🔜' },
   locked: { label: 'Em breve', emoji: '🔒' },
 }

@@ -2,12 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
-import {
-  VALE_LANDMARKS,
-  valeCharacterWorldPos,
-  valeTerrain,
-  type ValeLandmark,
-} from '@/lib/vale/valeWorld'
+import { getValeGroundY } from '@/lib/vale/valeWalkable'
+import { VALE_HERO_MODE, VALE_LANDMARKS, valeCharacterWorldPos, valeTerrain, type ValeLandmark } from '@/lib/vale/valeWorld'
 import { useValeStore } from '@/store/useValeStore'
 import * as THREE from 'three'
 
@@ -20,6 +16,10 @@ function useGroundY(x: number, z: number) {
 
   useEffect(() => {
     const sample = () => {
+      if (VALE_HERO_MODE) {
+        setY(getValeGroundY(x, z))
+        return true
+      }
       if (!valeTerrain.object) return false
       rayOrigin.set(x, 30, z)
       groundRay.set(rayOrigin, RAY_DOWN)

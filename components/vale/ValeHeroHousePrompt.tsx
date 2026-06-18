@@ -9,6 +9,7 @@ import { CasaUrsoHubModal } from './CasaUrsoHubModal'
 export function ValeHeroHousePrompt() {
   const isNearHouse = useValeStore((s) => s.isNearHouse)
   const houseHubOpen = useValeStore((s) => s.houseHubOpen)
+  const interactionPending = useValeStore((s) => s.interactionPending)
   const openHouseHub = useValeStore((s) => s.openHouseHub)
   const closeHouseHub = useValeStore((s) => s.closeHouseHub)
 
@@ -31,7 +32,7 @@ export function ValeHeroHousePrompt() {
 
   return (
     <>
-      {isNearHouse && !houseHubOpen && (
+      {isNearHouse && !houseHubOpen && !interactionPending && (
         <div className="vale-page__house-card" role="dialog" aria-label="Casa do Urso">
           <span className="vale-page__house-card-icon" aria-hidden>
             🏡

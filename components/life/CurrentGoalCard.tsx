@@ -51,6 +51,8 @@ export function WorldStatusList() {
       {journeyWorlds.map((world, i) => {
         const meta = worldStatusMeta[world.status]
         const isActive = world.status === 'active'
+        const isAvailable = world.status === 'available'
+        const isPlayable = (isActive || isAvailable) && world.href
 
         return (
           <motion.article
@@ -61,7 +63,9 @@ export function WorldStatusList() {
             className={`rounded-3xl border p-4 backdrop-blur-md ${
               isActive
                 ? 'bg-white/85 border-cadu-coral/40 shadow-cadu'
-                : 'bg-white/55 border-white/60'
+                : isAvailable
+                  ? 'bg-white/80 border-[#B48CFF]/35 shadow-cadu'
+                  : 'bg-white/55 border-white/60'
             }`}
           >
             <div className="flex items-center justify-between gap-2">
@@ -70,21 +74,34 @@ export function WorldStatusList() {
                 className={`shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-extrabold ${
                   isActive
                     ? 'bg-cadu-mint text-cadu-ink'
-                    : world.status === 'next'
-                      ? 'bg-cadu-honey/50 text-cadu-ink'
-                      : 'bg-cadu-cream text-cadu-muted'
+                    : isAvailable
+                      ? 'bg-[#E8D9FF] text-[#5B4B8A]'
+                      : world.status === 'next'
+                        ? 'bg-cadu-honey/50 text-cadu-ink'
+                        : 'bg-cadu-cream text-cadu-muted'
                 }`}
               >
                 {meta.emoji} {meta.label}
               </span>
             </div>
-            <p className="mt-1.5 text-xs text-cadu-muted leading-snug">{world.description}</p>
-            {isActive && world.href && (
+            {world.domain && (
+              <p className="mt-1 text-[10px] font-extrabold uppercase tracking-wide text-[#8B7BB8]">
+                {world.domain}
+              </p>
+            )}
+            <p className="mt-1.5 text-xs text-cadu-muted leading-snug">
+              {world.tagline ?? world.description}
+            </p>
+            {isPlayable && (
               <Link
-                href={world.href}
-                className="mt-3 inline-block rounded-full bg-cadu-coral px-4 py-1.5 text-xs font-extrabold text-white shadow-cadu transition-transform hover:-translate-y-0.5"
+                href={world.href!}
+                className={`mt-3 inline-block rounded-full px-4 py-1.5 text-xs font-extrabold text-white shadow-cadu transition-transform hover:-translate-y-0.5 ${
+                  isAvailable
+                    ? 'bg-gradient-to-r from-[#B48CFF] to-[#8B7AE8]'
+                    : 'bg-cadu-coral'
+                }`}
               >
-                Entrar
+                {isAvailable ? 'Explorar' : 'Entrar'}
               </Link>
             )}
           </motion.article>

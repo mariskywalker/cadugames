@@ -296,7 +296,7 @@
   z-index: 10;
 }
 
-.opening-interactions .vale-story-balloon {
+.opening-interactions .vale-story-balloon:not(.vale-story-balloon--anchored) {
   bottom: max(140px, calc(env(safe-area-inset-bottom) + 120px));
 }
 
@@ -320,7 +320,7 @@
   z-index: 66;
 }
 
-.vale-world-interactions--ui .vale-story-balloon {
+.vale-world-interactions--ui .vale-story-balloon:not(.vale-story-balloon--anchored) {
   position: fixed;
   z-index: 67;
   bottom: max(88px, calc(env(safe-area-inset-bottom) + 72px));
@@ -339,8 +339,59 @@
   z-index: 30;
 }
 
-.home-world-interactions .vale-story-balloon {
+.home-world-interactions .vale-story-balloon:not(.vale-story-balloon--anchored) {
   bottom: max(100px, calc(env(safe-area-inset-bottom) + 88px));
+}
+
+/* Balão ancorado ao emoji clicado */
+.vale-story-backdrop--anchored {
+  position: fixed;
+  inset: 0;
+  z-index: 66;
+  pointer-events: auto;
+}
+
+.vale-story-balloon--anchored {
+  position: fixed;
+  z-index: 67;
+  left: auto;
+  bottom: auto;
+  transform: none;
+  width: min(calc(100vw - 24px), 320px);
+  overflow: visible;
+  pointer-events: auto;
+}
+
+.vale-story-balloon--tail-top .vale-story-tail {
+  top: -9px;
+  left: 50%;
+  bottom: auto;
+  right: auto;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.vale-story-balloon--tail-bottom .vale-story-tail {
+  top: auto;
+  bottom: -9px;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%) rotate(225deg);
+}
+
+.vale-story-balloon--tail-left .vale-story-tail {
+  top: 50%;
+  left: -9px;
+  bottom: auto;
+  right: auto;
+  transform: translateY(-50%) rotate(-45deg);
+}
+
+.vale-story-balloon--tail-right .vale-story-tail {
+  top: 50%;
+  left: auto;
+  right: -9px;
+  bottom: auto;
+  transform: translateY(-50%) rotate(135deg);
 }
 
 /* Editor de pontos nos hubs */

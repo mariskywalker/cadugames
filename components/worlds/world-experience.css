@@ -1,0 +1,291 @@
+.world-experience {
+  --world-enter-ms: 1000ms;
+  --world-sky-bg:
+    radial-gradient(circle at 20% 20%, rgba(255, 221, 235, 0.9), transparent 32%),
+    radial-gradient(circle at 80% 30%, rgba(210, 235, 255, 0.75), transparent 34%),
+    radial-gradient(circle at 50% 80%, rgba(255, 244, 210, 0.75), transparent 36%),
+    linear-gradient(180deg, #fff7fa 0%, #f4f8ff 58%, #fff3f5 100%);
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  min-height: 100dvh;
+  overflow: hidden;
+  background: transparent;
+  color: #2d3142;
+  font-family: ui-rounded, system-ui, sans-serif;
+}
+
+.world-experience__sky {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: var(--world-sky-bg);
+  pointer-events: none;
+}
+
+.world-experience__sky::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.75) 0 2px, transparent 3px);
+  background-size: 42px 42px;
+  opacity: 0.28;
+}
+
+.world-experience--loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--world-sky-bg, linear-gradient(180deg, #fff7fa 0%, #f4f8ff 58%, #fff3f5 100%));
+}
+
+.world-experience__loading-text {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #5b4b8a;
+}
+
+/* ─── Cena fullscreen — ocupa 100% da viewport ─── */
+
+.world-scene {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  overflow: hidden;
+  background: transparent;
+  /* opacity aqui quebra mix-blend-mode do Spline com o céu CADU */
+}
+
+/* ─── HUD sobre a cena ─── */
+
+.world-experience__hud {
+  position: absolute;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.world-experience__hud > * {
+  pointer-events: auto;
+}
+
+.world-experience__hud--top-left {
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.55rem;
+  padding:
+    max(0.7rem, env(safe-area-inset-top))
+    max(1rem, env(safe-area-inset-right))
+    0.75rem
+    max(1rem, env(safe-area-inset-left));
+  max-width: min(52vw, 280px);
+}
+
+.world-experience__back {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: #5b4b8a;
+  text-decoration: none;
+  box-shadow: 0 8px 22px rgba(91, 75, 138, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.world-experience__identity {
+  padding-left: 0.15rem;
+}
+
+.world-experience__domain {
+  margin: 0;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(91, 75, 138, 0.65);
+}
+
+.world-experience__title {
+  margin: 0.12rem 0 0;
+  font-size: clamp(0.95rem, 3.2vw, 1.15rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: #2d3142;
+  line-height: 1.15;
+}
+
+.world-experience__hud--mission {
+  top: max(0.75rem, env(safe-area-inset-top));
+  right: max(0.85rem, env(safe-area-inset-right));
+  width: min(42vw, 220px);
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0.85rem 0.95rem;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.92);
+  box-shadow:
+    0 14px 36px rgba(91, 75, 138, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  opacity: 0;
+  translate: 0 -8px;
+  transition:
+    opacity calc(var(--world-enter-ms) * 0.85) ease calc(var(--world-enter-ms) * 0.15),
+    translate calc(var(--world-enter-ms) * 0.85) ease calc(var(--world-enter-ms) * 0.15);
+}
+
+.world-experience--entered .world-experience__hud--mission {
+  opacity: 1;
+  translate: 0 0;
+}
+
+.world-experience__mission-kicker {
+  margin: 0;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #8b7bb8;
+}
+
+.world-experience__mission-text {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 800;
+  line-height: 1.35;
+  color: #2d3142;
+}
+
+.world-experience__cta {
+  width: 100%;
+  border: none;
+  border-radius: 999px;
+  padding: 0.62rem 0.9rem;
+  font-size: 0.78rem;
+  font-weight: 900;
+  color: #fff;
+  background: linear-gradient(135deg, #b48cff, #8b7ae8);
+  box-shadow: 0 8px 22px rgba(139, 122, 232, 0.32);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.world-experience__cta:hover {
+  transform: translateY(-1px);
+}
+
+/* ─── Hotspots (alinhados ao zoom da câmera) ─── */
+
+.world-experience-hotspots {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.world-experience-hotspot {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 56px;
+}
+
+.world-experience-hotspot__pulse {
+  position: absolute;
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.42);
+  box-shadow: 0 0 0 0 rgba(180, 140, 255, 0.45);
+  animation: world-experience-hotspot-pulse 2.6s ease-in-out infinite;
+}
+
+.world-experience-hotspot__icon {
+  position: relative;
+  z-index: 1;
+  font-size: 1.45rem;
+  filter: drop-shadow(0 2px 8px rgba(45, 49, 66, 0.22));
+  transition: transform 0.2s ease;
+}
+
+.world-experience-hotspot__label {
+  position: relative;
+  z-index: 1;
+  font-size: 0.6rem;
+  font-weight: 800;
+  color: #2d3142;
+  background: rgba(255, 255, 255, 0.88);
+  padding: 3px 8px;
+  border-radius: 999px;
+  box-shadow: 0 4px 14px rgba(91, 75, 138, 0.1);
+  white-space: nowrap;
+  opacity: 0.92;
+}
+
+.world-experience-hotspot:hover .world-experience-hotspot__icon,
+.world-experience-hotspot:focus-visible .world-experience-hotspot__icon {
+  transform: scale(1.1);
+}
+
+.world-experience-hotspot:focus-visible {
+  outline: 2px solid rgba(180, 140, 255, 0.85);
+  outline-offset: 4px;
+  border-radius: 999px;
+}
+
+@keyframes world-experience-hotspot-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(180, 140, 255, 0.35);
+  }
+  50% {
+    transform: scale(1.08);
+    box-shadow: 0 0 0 10px rgba(180, 140, 255, 0);
+  }
+}
+
+@media (min-width: 768px) {
+  .world-experience__hud--mission {
+    width: min(34vw, 240px);
+    padding: 1rem 1.1rem;
+  }
+
+  .world-experience__mission-text {
+    font-size: 0.88rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .world-experience__hud--mission {
+    top: auto;
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    right: 50%;
+    translate: 50% 12px;
+    width: min(92vw, 320px);
+  }
+
+  .world-experience--entered .world-experience__hud--mission {
+    translate: 50% 0;
+  }
+}

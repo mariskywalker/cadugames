@@ -6,6 +6,7 @@ import type { ReactNode } from 'react'
 
 export interface FloatingIslandProps {
   name: string
+  subtitle?: string
   available?: boolean
   href?: string
   left: string
@@ -16,6 +17,7 @@ export interface FloatingIslandProps {
 
 export function FloatingIsland({
   name,
+  subtitle,
   available = false,
   href,
   left,
@@ -34,6 +36,7 @@ export function FloatingIsland({
     <>
       <div className="floating-island-art">{children}</div>
       <span className="island-label">{name}</span>
+      {subtitle && <span className="island-subtitle">{subtitle}</span>}
     </>
   )
 

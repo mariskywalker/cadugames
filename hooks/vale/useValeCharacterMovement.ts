@@ -12,10 +12,10 @@ import {
   type CharacterState,
 } from '@/lib/opening/animations'
 import { VALE_MOVE_SPEED, VALE_RUN_SPEED } from '@/lib/vale/valeMotion'
-import { clampToValeNav } from '@/lib/vale/valeWorld'
+import { VALE_HERO_MODE, clampToValeNav, isInsideValeNav } from '@/lib/vale/valeWorld'
 import { useValeStore } from '@/store/useValeStore'
 
-/** Mesma locomoção da sala sensorial, mas com nav circular do Vale. */
+/** Locomoção legada — só modo não-hero (clique no chão) */
 export function useValeCharacterMovement({
   groupRef,
   setCharacterState,
@@ -32,6 +32,8 @@ export function useValeCharacterMovement({
   const wasMovingRef = useRef(false)
 
   useFrame((_, delta) => {
+    if (VALE_HERO_MODE) return
+
     const group = groupRef.current
     if (!group) return
 
@@ -51,7 +53,6 @@ export function useValeCharacterMovement({
 
     const isRun = st.characterState === CHARACTER_STATES.RUN
     const speed = isRun ? VALE_RUN_SPEED : VALE_MOVE_SPEED
-
     const [tx, tz] = clampToValeNav(targetPosition[0], targetPosition[2])
 
     const vTarget = vTargetRef.current
@@ -77,7 +78,9 @@ export function useValeCharacterMovement({
     const step = Math.min(dist, speed * delta)
     let nx = group.position.x + vDir.x * step
     let nz = group.position.z + vDir.z * step
-    ;[nx, nz] = clampToValeNav(nx, nz)
+    if (!isInsideValeNav(nx, nz)) {
+      ;[nx, nz] = clampToValeNav(nx, nz)
+    }
 
     group.position.x = nx
     group.position.z = nz

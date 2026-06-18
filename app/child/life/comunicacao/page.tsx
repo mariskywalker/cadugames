@@ -1,5 +1,5 @@
-import { ValeExperience } from '@/components/vale/ValeExperience'
+import { ValeExperienceLoader } from '@/components/vale/ValeExperienceLoader'
 
 export default function ComunicacaoPage() {
-  return <ValeExperience />
+  return <ValeExperienceLoader />
 }

@@ -1,6 +1,8 @@
 'use client'
 
+import { useRef } from 'react'
 import { motion } from 'framer-motion'
+import { useAnchoredSheetPosition } from '@/hooks/worlds/useAnchoredSheetPosition'
 import type { WorldInteractionPoint } from '@/lib/worlds/types'
 
 export function WorldInteractionSheet({
@@ -17,17 +19,26 @@ export function WorldInteractionSheet({
   onPick: (choice: string) => void
   onClose: () => void
 }) {
+  const balloonRef = useRef<HTMLDivElement>(null)
   const sceneLine = point.sheet.sceneLine
   const promptText =
     letterOverride && point.id === 'home-letter'
       ? letterOverride
       : point.sheet.prompt
 
+  const { style, tailSide } = useAnchoredSheetPosition(
+    balloonRef,
+    point.x,
+    point.y,
+    true,
+    feedback ?? promptText,
+  )
+
   return (
     <>
       <motion.button
         type="button"
-        className="vale-story-backdrop"
+        className="vale-story-backdrop vale-story-backdrop--anchored"
         aria-label="Fechar"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -36,13 +47,15 @@ export function WorldInteractionSheet({
       />
 
       <motion.div
-        className="vale-story-balloon"
+        ref={balloonRef}
+        className={`vale-story-balloon vale-story-balloon--anchored vale-story-balloon--tail-${tailSide}`}
+        style={style}
         role="dialog"
         aria-labelledby="world-interaction-text"
-        initial={{ y: 12, opacity: 0, scale: 0.95 }}
-        animate={{ y: 0, opacity: 1, scale: 1 }}
-        exit={{ y: 10, opacity: 0 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 26 }}
+        initial={{ opacity: 0, scale: 0.94 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.96 }}
+        transition={{ type: 'spring', stiffness: 320, damping: 28 }}
       >
         <span className="vale-story-tail" aria-hidden />
         <span className="vale-story-sparkle" aria-hidden>

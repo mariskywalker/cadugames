@@ -1,13 +1,14 @@
 'use client'
 
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
 import type { Group } from 'three'
 import { prepareGlbImportedLighting } from '@/lib/vale/glbImportedLighting'
 import { computeValeComposition } from '@/lib/vale/valeComposition'
-import { valeTerrain } from '@/lib/vale/valeWorld'
+import { markValeObjectNonWalkable } from '@/lib/vale/valeWalkable'
+import { valeStageReady, valeTerrain } from '@/lib/vale/valeWorld'
 import { useValeIslandEditorStore } from '@/store/useValeIslandEditorStore'
 const GLB_PATH = '/models/vale-palavras-lite.glb'
 
@@ -22,6 +23,7 @@ function buildCasaUrsoLayout(scene: THREE.Object3D): IslandLayout {
   const cloned = scene.clone(true)
 
   prepareGlbImportedLighting(cloned)
+  markValeObjectNonWalkable(cloned)
 
   const box = new THREE.Box3().setFromObject(cloned)
   const size = new THREE.Vector3()
@@ -66,6 +68,7 @@ export function ValeEnvironment() {
   const stageRef = useRef<Group>(null)
   const layoutRef = useRef<IslandLayout | null>(null)
   const islandSizeRef = useRef(0)
+  const [stageReady, setStageReady] = useState(false)
   const islandLayout = useValeIslandEditorStore((s) => s.layout)
   const hydrateIsland = useValeIslandEditorStore((s) => s.hydrate)
 
@@ -93,14 +96,19 @@ export function ValeEnvironment() {
     [islandLayout.rotationXDeg, islandLayout.rotationYDeg, islandLayout.rotationZDeg],
   )
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const stage = stageRef.current
-    if (!stage) return
+    if (!stage || size.width < 16 || size.height < 16) return
+
     const { islandSize } = computeValeComposition(size.width, size.height)
     islandSizeRef.current = islandSize
     applyStageTransform(stage, layout, islandSize, offset, rotationDeg)
     valeTerrain.object = stage
+    valeStageReady.ready = true
+    setStageReady(true)
+
     return () => {
+      valeStageReady.ready = false
       if (valeTerrain.object === stage) valeTerrain.object = null
     }
   }, [layout, size.height, size.width, offset, rotationDeg])
@@ -108,7 +116,7 @@ export function ValeEnvironment() {
   useFrame(() => {
     const stage = stageRef.current
     const current = layoutRef.current
-    if (!stage || !current) return
+    if (!stage || !current || !stageReady) return
     const { islandSize } = computeValeComposition(size.width, size.height)
     const sizeChanged = Math.abs(islandSize - islandSizeRef.current) >= 0.02
     if (!sizeChanged) return
@@ -117,7 +125,7 @@ export function ValeEnvironment() {
   })
 
   return (
-    <group ref={stageRef}>
+    <group ref={stageRef} visible={stageReady}>
       <primitive object={layout.island} />
     </group>
   )

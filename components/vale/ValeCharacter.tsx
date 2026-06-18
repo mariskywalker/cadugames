@@ -14,6 +14,7 @@ import {
 } from '@/lib/opening/glbClipRenameMap'
 import { useCharacterAnimations } from '@/hooks/opening/useCharacterAnimations'
 import { useValeCharacterMovement } from '@/hooks/vale/useValeCharacterMovement'
+import { useValeHotspotMovement } from '@/hooks/vale/useValeHotspotMovement'
 import { useValeKeyboardControls } from '@/hooks/vale/useValeKeyboardControls'
 import { VALE_ANIMATION_TIME_SCALE } from '@/lib/vale/valeMotion'
 import {
@@ -22,15 +23,15 @@ import {
   VALE_CHARACTER_SCALE,
   VALE_CHARACTER_Y_LIFT,
   VALE_GROUND_RAY_MAX_Y,
-  VALE_HERO_GROUND_RAY_MAX_Y,
   VALE_HERO_MODE,
   VALE_PATH_GROUND_Y,
   VALE_SPAWN,
   VALE_SPAWN_ROTATION,
-  getValeHeroGroundY,
   valeCharacterWorldPos,
   valeTerrain,
 } from '@/lib/vale/valeWorld'
+import { getBearHeroIdlePose } from '@/lib/vale/valeNarrativeIntro'
+import { getValeGroundY, resetValeGroundY } from '@/lib/vale/valeWalkable'
 import { useValeStore } from '@/store/useValeStore'
 
 // Mesma URL do /opening para compartilhar o cache do useGLTF
@@ -43,37 +44,34 @@ const terrainRay = new THREE.Raycaster()
 const rayOrigin = new THREE.Vector3()
 const RAY_DOWN = new THREE.Vector3(0, -1, 0)
 
-/** Ignora telhado/paredes — usa o ponto de chão mais alto abaixo do teto do raycast */
-function sampleWalkableGroundY(hits: THREE.Intersection[], maxY = VALE_GROUND_RAY_MAX_Y) {
-  let best: number | null = null
-  for (const hit of hits) {
-    const y = hit.point.y
-    if (y > maxY) continue
-    if (best === null || y > best) best = y
-  }
-  return best
+const HERO_GROUND_LERP = 0.32
+
+const animatedBounds = new THREE.Box3()
+const bodyWorldPos = new THREE.Vector3()
+
+function sampleAnimatedFootMinY(scene: THREE.Object3D, body: Group, scale: number): number | null {
+  animatedBounds.makeEmpty()
+  scene.updateWorldMatrix(true, true)
+  body.updateWorldMatrix(true, true)
+  bodyWorldPos.setFromMatrixPosition(body.matrixWorld)
+
+  scene.traverse((obj) => {
+    const mesh = obj as THREE.Mesh
+    if (!mesh?.isMesh || !mesh.geometry) return
+    const geom = mesh.geometry
+    if (!geom.boundingBox) geom.computeBoundingBox()
+    if (!geom.boundingBox) return
+    const tmp = geom.boundingBox.clone()
+    tmp.applyMatrix4(mesh.matrixWorld)
+    animatedBounds.union(tmp)
+  })
+
+  if (!Number.isFinite(animatedBounds.min.y)) return null
+  return (animatedBounds.min.y - bodyWorldPos.y) / scale
 }
 
 function sampleHeroGroundY(x: number, z: number) {
-  const rampY = getValeHeroGroundY(x, z)
-
-  if (!valeTerrain.object) {
-    return rampY + VALE_CHARACTER_Y_LIFT
-  }
-
-  rayOrigin.set(x, 30, z)
-  terrainRay.set(rayOrigin, RAY_DOWN)
-  const meshY = sampleWalkableGroundY(
-    terrainRay.intersectObject(valeTerrain.object, true),
-    VALE_HERO_GROUND_RAY_MAX_Y,
-  )
-
-  if (meshY === null) {
-    return rampY + VALE_CHARACTER_Y_LIFT
-  }
-
-  // GLB manda nos degraus; rampa só evita afundar entre amostras
-  return Math.max(rampY, meshY) + VALE_CHARACTER_Y_LIFT
+  return getValeGroundY(x, z) + VALE_CHARACTER_Y_LIFT
 }
 
 export function ValeCharacter() {
@@ -94,8 +92,13 @@ export function ValeCharacter() {
   const animationClips = useValeStore((s) => s.animationClips)
   const setAnimationClips = useValeStore((s) => s.setAnimationClips)
 
-  const spawnPosition = VALE_HERO_MODE ? VALE_BEAR_HERO.position : VALE_SPAWN
-  const spawnRotation = VALE_HERO_MODE ? VALE_BEAR_HERO.rotation : VALE_SPAWN_ROTATION
+  const heroPose = VALE_HERO_MODE ? getBearHeroIdlePose() : null
+  const spawnPosition = heroPose
+    ? ([heroPose.x, VALE_PATH_GROUND_Y, heroPose.z] as [number, number, number])
+    : VALE_SPAWN
+  const spawnRotation = heroPose
+    ? ([0, heroPose.rotationY, 0] as [number, number, number])
+    : VALE_SPAWN_ROTATION
   const characterScale = VALE_HERO_MODE ? VALE_BEAR_HERO.scale : VALE_CHARACTER_SCALE
 
   useEffect(() => {
@@ -104,6 +107,9 @@ export function ValeCharacter() {
 
   const { scene, animations } = useGLTF(BEAR_URL)
   const { actions, names, mixer } = useAnimations(animations, modelRef)
+
+  const isTraveling = useValeStore((s) => s.isTraveling)
+  const hotspotJourney = useValeStore((s) => s.hotspotJourney)
 
   const clipsReady = modelStatus === 'loaded' && names.length > 0
 
@@ -128,22 +134,25 @@ export function ValeCharacter() {
   useEffect(() => {
     clearTarget()
     resetToIdle()
+    resetValeGroundY(VALE_PATH_GROUND_Y)
     const g = group.current
     if (!g) return
     g.position.set(...spawnPosition)
-    g.quaternion.setFromEuler(new THREE.Euler(...spawnRotation))
-    groundYRef.current = spawnPosition[1]
+    g.rotation.set(spawnRotation[0], spawnRotation[1], spawnRotation[2])
+    groundYRef.current = sampleHeroGroundY(spawnPosition[0], spawnPosition[2])
   }, [clearTarget, resetToIdle, spawnPosition, spawnRotation])
 
+  useValeHotspotMovement({ groupRef: group, setCharacterState })
   useValeCharacterMovement({ groupRef: group, setCharacterState })
-  useValeKeyboardControls({ groupRef: group, enabled: true })
+  useValeKeyboardControls({ groupRef: group, enabled: !VALE_HERO_MODE })
 
   useCharacterAnimations({
     actions,
     mixer,
     clipsReady,
     characterState,
-    targetPosition,
+    targetPosition:
+      VALE_HERO_MODE && (isTraveling || hotspotJourney) ? ([0, 0, 0] as [number, number, number]) : VALE_HERO_MODE ? null : targetPosition,
     animationClips,
   })
 
@@ -192,7 +201,9 @@ export function ValeCharacter() {
     return Math.max(0, -box.min.y * characterScale) + CHARACTER_Y_OFFSET + footLift
   }, [scene, characterScale])
 
-  useFrame((state) => {
+  useFrame((state, delta) => {
+    mixer?.update(delta)
+
     const g = group.current
     const body = bodyRef.current
     if (!g || !body) return
@@ -208,12 +219,15 @@ export function ValeCharacter() {
     } else if (moved && valeTerrain.object) {
       rayOrigin.set(g.position.x, 30, g.position.z)
       terrainRay.set(rayOrigin, RAY_DOWN)
-      const groundY = sampleWalkableGroundY(
-        terrainRay.intersectObject(valeTerrain.object, true),
-      )
-      if (groundY !== null) {
-        const dy = groundY - groundYRef.current
-        if (dy < 0.85) targetGroundY = groundY
+      let best: number | null = null
+      for (const hit of terrainRay.intersectObject(valeTerrain.object, true)) {
+        const y = hit.point.y
+        if (y > VALE_GROUND_RAY_MAX_Y) continue
+        if (best === null || y > best) best = y
+      }
+      if (best !== null) {
+        const dy = best - groundYRef.current
+        if (dy < 0.85) targetGroundY = best
       }
     }
 
@@ -222,24 +236,31 @@ export function ValeCharacter() {
     }
 
     groundYRef.current = targetGroundY
-    g.position.y = THREE.MathUtils.lerp(g.position.y, targetGroundY, VALE_HERO_MODE ? 0.32 : 0.18)
+    g.position.y = THREE.MathUtils.lerp(
+      g.position.y,
+      targetGroundY,
+      VALE_HERO_MODE ? HERO_GROUND_LERP : 0.18,
+    )
 
     valeCharacterWorldPos.set(g.position.x, g.position.y, g.position.z)
 
     const st = useValeStore.getState()
     const tp = st.targetPosition
-    const isMoving =
-      tp != null ||
-      st.characterState === CHARACTER_STATES.WALK ||
-      st.characterState === CHARACTER_STATES.RUN
-    const walkFootBoost = VALE_HERO_MODE && isMoving ? 0.08 : 0
+    const traveling = st.isTraveling || st.hotspotJourney != null
 
-    if (tp) {
-      body.position.y = groundedYOffset + walkFootBoost
-      return
+    let bodyY = groundedYOffset
+    if (VALE_HERO_MODE && traveling) {
+      const footMinY = sampleAnimatedFootMinY(scene, body, characterScale)
+      if (footMinY !== null) {
+        const lift = Math.max(0, groundedYOffset - footMinY)
+        bodyY = groundedYOffset + lift
+      }
+    } else if (!tp) {
+      const t = state.clock.elapsedTime
+      bodyY = groundedYOffset + Math.sin(t * 0.65) * 0.01
     }
-    const t = state.clock.elapsedTime
-    body.position.y = groundedYOffset + walkFootBoost + Math.sin(t * 0.65) * 0.012
+
+    body.position.y = bodyY
   })
 
   return (
