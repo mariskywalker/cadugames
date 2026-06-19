@@ -2,7 +2,7 @@ import type { ValeWalkPathPoint } from './valeWalkable'
 import { DEFAULT_VALE_WALK_PATH_POINTS } from './valeWalkable'
 
 export const WALK_PATH_EDITOR_STORAGE_KEY = 'cadu.vale.walk-path.overrides'
-export const WALK_PATH_LAYOUT_VERSION = 3
+export const WALK_PATH_LAYOUT_VERSION = 1
 
 export function cloneWalkPathPoints(points: ValeWalkPathPoint[]): ValeWalkPathPoint[] {
   return points.map((p) => ({ ...p }))

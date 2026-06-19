@@ -164,39 +164,6 @@
   overflow: hidden;
 }
 
-.home-ambient__butterfly {
-  position: absolute;
-  font-size: 1.1rem;
-  opacity: 0.75;
-  animation: home-butterfly-drift 14s ease-in-out infinite;
-}
-
-.home-ambient__bird {
-  position: absolute;
-  font-size: 1rem;
-  opacity: 0.6;
-  animation: home-bird-glide 18s linear infinite;
-}
-
-.home-ambient__leaf {
-  position: absolute;
-  font-size: 0.9rem;
-  opacity: 0.45;
-  animation: home-leaf-fall 12s ease-in-out infinite;
-}
-
-.home-ambient__leaf--1 {
-  left: 12%;
-  top: 8%;
-  animation-delay: 0s;
-}
-
-.home-ambient__leaf--2 {
-  left: 82%;
-  top: 14%;
-  animation-delay: 4s;
-}
-
 .home-ambient__daily {
   position: absolute;
   font-size: 1.25rem;
@@ -212,57 +179,6 @@
 .home-ambient__daily--lantern {
   left: 58%;
   top: 14%;
-}
-
-.home-ambient__daily--butterfly {
-  left: 48%;
-  top: 12%;
-}
-
-.home-ambient__daily--leaf {
-  left: 52%;
-  top: 18%;
-}
-
-@keyframes home-butterfly-drift {
-  0%,
-  100% {
-    transform: translate(0, 0) rotate(0deg);
-  }
-  25% {
-    transform: translate(24px, -12px) rotate(8deg);
-  }
-  50% {
-    transform: translate(48px, 4px) rotate(-4deg);
-  }
-  75% {
-    transform: translate(20px, 16px) rotate(6deg);
-  }
-}
-
-@keyframes home-bird-glide {
-  0% {
-    transform: translateX(-20px) translateY(0);
-  }
-  50% {
-    transform: translateX(40px) translateY(-8px);
-  }
-  100% {
-    transform: translateX(100px) translateY(0);
-    opacity: 0;
-  }
-}
-
-@keyframes home-leaf-fall {
-  0%,
-  100% {
-    transform: translateY(0) rotate(0deg);
-    opacity: 0.35;
-  }
-  50% {
-    transform: translateY(18px) rotate(25deg);
-    opacity: 0.6;
-  }
 }
 
 @keyframes home-daily-glow {

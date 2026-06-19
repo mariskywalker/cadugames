@@ -7,6 +7,7 @@ import * as THREE from 'three'
 import type { Group } from 'three'
 import { OPENING_ASSETS } from '@/lib/opening/assets'
 import { CHARACTER_Y_OFFSET } from '@/lib/opening/animations'
+import { OPENING_INTERACTIVE_RENDER_ORDER } from '@/lib/opening/openingSceneEditorLayout'
 import { makeCelMaterial } from '@/lib/opening/celShade'
 import {
   getCanonicalClipName,
@@ -121,6 +122,7 @@ export function CharacterController({
         return cel
       })
       mesh.material = Array.isArray(original) ? nextMaterials : nextMaterials[0]
+      mesh.renderOrder = OPENING_INTERACTIVE_RENDER_ORDER
     })
   }, [scene])
 

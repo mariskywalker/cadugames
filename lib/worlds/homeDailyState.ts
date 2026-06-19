@@ -1,6 +1,6 @@
 const HOME_DAILY_KEY = 'cadu.home.daily'
 
-export type HomeDailyVariant = 'flower' | 'lantern' | 'butterfly' | 'leaf'
+export type HomeDailyVariant = 'flower' | 'lantern'
 
 export interface HomeDailyState {
   date: string
@@ -16,7 +16,11 @@ const LETTERS = [
   'Respire fundo. Estamos aqui, no seu ritmo.',
 ]
 
-const VARIANTS: HomeDailyVariant[] = ['flower', 'lantern', 'butterfly', 'leaf']
+const VARIANTS: HomeDailyVariant[] = ['flower', 'lantern']
+
+function normalizeVariant(variant: string): HomeDailyVariant {
+  return variant === 'lantern' ? 'lantern' : 'flower'
+}
 
 function todayKey() {
   return new Date().toISOString().slice(0, 10)
@@ -34,7 +38,9 @@ export function getHomeDailyState(): HomeDailyState {
       const raw = localStorage.getItem(HOME_DAILY_KEY)
       if (raw) {
         const saved = JSON.parse(raw) as HomeDailyState
-        if (saved.date === date) return saved
+        if (saved.date === date) {
+          return { ...saved, variant: normalizeVariant(saved.variant) }
+        }
       }
     } catch {
       // fall through

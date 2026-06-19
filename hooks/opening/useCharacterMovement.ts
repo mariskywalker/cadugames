@@ -14,7 +14,9 @@ import {
   type CharacterState,
 } from '@/lib/opening/animations'
 import { clampToNavMesh } from '@/lib/opening/navMesh'
+import { SCENE_FLOOR_Y } from '@/lib/opening/sceneLayout'
 import { useOpeningStore } from '@/store/useOpeningStore'
+import { useOpeningSceneEditorStore } from '@/store/useOpeningSceneEditorStore'
 
 export function useCharacterMovement({
   groupRef,
@@ -37,15 +39,19 @@ export function useCharacterMovement({
 
     const st = useOpeningStore.getState()
     const targetPosition = st.targetPosition
+    const editorActive = useOpeningSceneEditorStore.getState().editorActive
+    const floorY = editorActive
+      ? 0
+      : SCENE_FLOOR_Y + useOpeningSceneEditorStore.getState().layout.objects.cadu.y
 
     const resolvePos = (x: number, z: number) =>
-      clampToNavMesh(x, z, st.bubbleTubeCollider)
+      clampToNavMesh(x, z, st.bubbleTubeCollider, useOpeningSceneEditorStore.getState().layout)
 
     if (!targetPosition) {
       const fixed = resolvePos(group.position.x, group.position.z)
       group.position.x = fixed[0]
       group.position.z = fixed[1]
-      group.position.y = 0
+      group.position.y = floorY
       if (wasMovingRef.current) {
         wasMovingRef.current = false
         setCharacterState(CHARACTER_STATES.IDLE)
@@ -58,7 +64,7 @@ export function useCharacterMovement({
     const speed = isRun ? RUN_SPEED : MOVE_SPEED
 
     const [tx, tz] = resolvePos(targetPosition[0], targetPosition[2])
-    const ty = 0
+    const ty = floorY
 
     const vTarget = vTargetRef.current
     const vToTarget = vToTargetRef.current
@@ -83,7 +89,7 @@ export function useCharacterMovement({
     vDir.copy(vToTarget).normalize()
     const step = Math.min(dist, speed * delta)
     let nx = group.position.x + vDir.x * step
-    const ny = 0
+    const ny = floorY
     let nz = group.position.z + vDir.z * step
 
     ;[nx, nz] = resolvePos(nx, nz)

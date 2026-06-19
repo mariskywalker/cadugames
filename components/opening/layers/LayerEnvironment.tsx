@@ -1,11 +1,1 @@
-'use client'
-
-import { StylizedRoom } from '../StylizedRoom'
-
-export function LayerEnvironment() {
-  return (
-    <group>
-      <StylizedRoom />
-    </group>
-  )
-}
+export { OpeningSceneBackLayer as LayerEnvironment } from '../OpeningSceneBackLayer'

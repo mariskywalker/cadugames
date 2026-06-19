@@ -3,6 +3,7 @@ import { BUBBLE_TUBE_CENTER, CHARACTER_STATES, type CharacterState } from '@/lib
 import { clampToNavMesh } from '@/lib/opening/navMesh'
 import { CADU_SPAWN, FIXED_CAMERA } from '@/lib/opening/sceneComposition'
 import type { TubeCollider } from '@/lib/opening/tubeNav'
+import { useOpeningSceneEditorStore } from '@/store/useOpeningSceneEditorStore'
 
 export type ModelStatus = 'loading' | 'loaded' | 'error'
 
@@ -41,7 +42,8 @@ export const useOpeningStore = create<OpeningStore>((set, get) => ({
 
   setWalkTarget: (x, z, { run = false } = {}) => {
     const st = get()
-    const [sx, sz] = clampToNavMesh(x, z, st.bubbleTubeCollider)
+    const layout = useOpeningSceneEditorStore.getState().layout
+    const [sx, sz] = clampToNavMesh(x, z, st.bubbleTubeCollider, layout)
     set({
       targetPosition: [sx, 0, sz],
       characterState: run ? CHARACTER_STATES.RUN : CHARACTER_STATES.WALK,

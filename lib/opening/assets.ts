@@ -6,4 +6,6 @@ export const OPENING_ASSETS = {
   bars: '/models/opening/bars.glb',
   sensorySwing: '/models/opening/sensory-swing.glb',
   tubeVideo: '/models/opening/tubebubble-optimized.mp4',
+  sceneBackdrop: '/opening/scene-frame.png',
+  podium: '/models/cenario/palco2.svg',
 } as const

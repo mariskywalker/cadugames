@@ -62,7 +62,7 @@ export function HubPointEditorPanel({
       </div>
 
       <p className="hub-point-editor-panel__hint">
-        Arraste o emoji · <kbd>H</kbd> alterna · Hub: {activeWorldId}
+        Arraste o emoji · <kbd>H</kbd> alterna · Hotspots: {activeWorldId}
       </p>
       {(message || panelMsg) && (
         <p className="hub-point-editor-panel__msg">{panelMsg ?? message}</p>

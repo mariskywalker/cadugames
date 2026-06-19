@@ -1,6 +1,5 @@
 import { SCENE_FLOOR_Y } from './sceneLayout'
-
-const CADU_CHARACTER_SCALE = 0.46
+import { CADU_CHARACTER_SCALE } from './sceneComposition'
 
 /** `background.height` = 20 cobre a tela inteira (modo cover). */
 export const OPENING_BACKDROP_COVER_BASE = 20
@@ -90,8 +89,8 @@ export const DEFAULT_OPENING_SCENE_LAYOUT: OpeningSceneLayout = {
   },
   objects: {
     podium: {
-      x: -0.3,
-      y: -1.41,
+      x: -0.32,
+      y: -3.34,
       z: -4.05,
       rotX: 0,
       rotY: 0.04,
@@ -101,55 +100,55 @@ export const DEFAULT_OPENING_SCENE_LAYOUT: OpeningSceneLayout = {
       scaleZ: 0.2,
     },
     bubbleColumn: {
-      x: 0,
-      y: 0.4,
-      z: -4.5,
+      x: -0.25,
+      y: 0.78,
+      z: -6,
       rotX: 0,
-      rotY: -2.68,
+      rotY: -2.52,
       rotZ: 0,
       scaleX: 0.78,
       scaleY: 0.76,
       scaleZ: 0.75,
     },
     ballPit: {
-      x: -2.6,
-      y: 0.17,
-      z: -2.65,
+      x: -2.85,
+      y: 0,
+      z: -7,
       rotX: 0,
       rotY: 1.2,
       rotZ: 0,
-      scaleX: 1,
-      scaleY: 1,
-      scaleZ: 1.01,
+      scaleX: 1.32,
+      scaleY: 1.28,
+      scaleZ: 1.38,
     },
     sensoryCocoon: {
-      x: -1.7,
-      y: 0.25,
-      z: -6,
+      x: 1.1,
+      y: 0.73,
+      z: -8.15,
       rotX: 0,
-      rotY: 0.42,
+      rotY: -0.1,
       rotZ: 0,
-      scaleX: 0.98,
-      scaleY: 1,
-      scaleZ: 1,
+      scaleX: 1.02,
+      scaleY: 1.02,
+      scaleZ: 1.03,
     },
     activityBars: {
       x: 3.01,
-      y: 0.41,
-      z: -5.35,
+      y: 0.79,
+      z: -6,
       rotX: 0,
       rotY: -1,
       rotZ: 0,
       scaleX: 0.96,
-      scaleY: 0.79,
+      scaleY: 0.89,
       scaleZ: 0.71,
     },
     cadu: {
-      x: -0.75,
-      y: 0.6,
+      x: 0.8,
+      y: 1.17,
       z: 1.95,
       rotX: 0,
-      rotY: 0.38,
+      rotY: 0,
       rotZ: 0,
       scaleX: CADU_CHARACTER_SCALE,
       scaleY: CADU_CHARACTER_SCALE,
@@ -287,8 +286,8 @@ export function openingObjectToWorld(
   }
 }
 
-/** Ordem de pintura no canvas (fundo PNG está em HTML atrás do canvas). */
-export const OPENING_PODIUM_RENDER_ORDER = 0
+/** Ordem de pintura no canvas — palco atrás dos objetos interativos. */
+export const OPENING_PODIUM_RENDER_ORDER = -1
 
 export const OPENING_INTERACTIVE_RENDER_ORDER = 10
 

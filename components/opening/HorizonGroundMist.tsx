@@ -46,7 +46,7 @@ export function HorizonGroundMist() {
     <mesh
       rotation-x={-Math.PI / 2}
       position={[SCENE_HUB[0], ROOM_STUDIO_FOG.sheetY, SCENE_HUB[2]]}
-      renderOrder={-8}
+      renderOrder={-10_500}
       material={material}
     >
       <circleGeometry args={[SCENE_HUB_RADIUS * ROOM_STUDIO_FOG.sheetRadiusMult, 96]} />

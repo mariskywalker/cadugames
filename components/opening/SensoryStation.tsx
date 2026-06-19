@@ -6,18 +6,26 @@ import { AliveMotion } from './AliveMotion'
 import { ModelErrorBoundary } from './ModelErrorBoundary'
 import { TherapeuticGlb } from './TherapeuticGlb'
 
-function StationModel({ station }: { station: SensoryStationConfig }) {
+function StationModel({
+  station,
+  renderOrder,
+}: {
+  station: SensoryStationConfig
+  renderOrder?: number | null
+}) {
   return (
     <TherapeuticGlb
       url={station.url}
       position={[0, 0, 0]}
       rotation={[0, 0, 0]}
+      targetHeight={station.targetHeight}
       scaleToCharacter={station.scaleToCharacter}
       characterScaleMode={station.characterScaleMode}
       characterHeightMult={station.characterHeightMult}
       characterWidthMult={station.characterWidthMult}
       scaleMult={station.scaleMult}
       sway={station.sway}
+      renderOrder={renderOrder}
     />
   )
 }
@@ -25,9 +33,11 @@ function StationModel({ station }: { station: SensoryStationConfig }) {
 export function SensoryStation({
   station,
   embedded = false,
+  renderOrder = null,
 }: {
   station: SensoryStationConfig
   embedded?: boolean
+  renderOrder?: number | null
 }) {
   const grounded = station.grounded === true
   const position = embedded ? ([0, 0, 0] as [number, number, number]) : station.position
@@ -40,6 +50,7 @@ export function SensoryStation({
         position,
         rotation,
       }}
+      renderOrder={renderOrder}
     />
   )
 

@@ -13,9 +13,13 @@ export function useHubPointEditorMode() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
-    if (params.get('hubs') === '1' || params.get('pontos') === '1') {
+    if (
+      params.get('hubs') === '1' ||
+      params.get('pontos') === '1' ||
+      params.get('hotspots') === '1'
+    ) {
       setEditorMode(true)
-      setMessage('Editor de pontos — arraste os emojis ou ajuste no painel.')
+      setMessage('Editor de hotspots — arraste os emojis ou ajuste no painel.')
     }
   }, [])
 
@@ -33,7 +37,7 @@ export function useHubPointEditorMode() {
         e.preventDefault()
         setEditorMode((on) => {
           const next = !on
-          setMessage(next ? 'Editor de pontos — arraste os emojis ou ajuste no painel.' : null)
+          setMessage(next ? 'Editor de hotspots — arraste os emojis ou ajuste no painel.' : null)
           return next
         })
       }

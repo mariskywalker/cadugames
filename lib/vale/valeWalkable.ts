@@ -17,18 +17,16 @@ export interface ValeWalkPathPoint {
   halfWidth?: number
 }
 
-/** Curva principal: centro da cena → caminho de pedras do GLB → porta da casa */
+/** Curva principal padrão: spawn → porta da Casa do Urso */
 export const DEFAULT_VALE_WALK_PATH_POINTS: ValeWalkPathPoint[] = [
-  { id: 'walk-spawn', x: -3.15, z: 0.52 },
-  { id: 'walk-1', x: -3.15, z: 0.16 },
-  { id: 'walk-2', x: -3.15, z: -0.38 },
-  { id: 'walk-3', x: -3.15, z: -1.08 },
-  { id: 'walk-4', x: -3.15, z: -2.08 },
-  { id: 'walk-5', x: -3.15, z: -3.18 },
-  { id: 'walk-6', x: -3.15, z: -4.28 },
-  { id: 'walk-7', x: -3.15, z: -5.28 },
-  { id: 'walk-8', x: -3.15, z: -6.02 },
-  { id: 'walk-9', x: -5.39, z: -21.88, halfWidth: 0.35 },
+  { id: 'walk-1', x: 0.55, z: 0.35 },
+  { id: 'walk-2', x: 0.56, z: -0.2 },
+  { id: 'walk-3', x: 0.62, z: -1.05 },
+  { id: 'walk-4', x: 0.72, z: -2.15 },
+  { id: 'walk-5', x: 0.82, z: -3.35 },
+  { id: 'walk-6', x: 0.91, z: -4.55 },
+  { id: 'walk-7', x: 0.98, z: -5.45 },
+  { id: 'walk-8', x: 1.03, z: -6.1 },
 ]
 
 /** @deprecated Use getValeWalkPathPoints() em runtime */
@@ -110,22 +108,6 @@ export function getValePathHalfWidth(t: number): number {
   const near = 1.28
   const far = 0.52
   return THREE.MathUtils.lerp(near, far, smoothstep(t))
-}
-
-export function getBearSpawnFromWalkPath(): { x: number; z: number; rotationY: number } {
-  const pts = getValeWalkPathPoints()
-  const spawn = pts[0] ?? { x: -3.15, z: 0.52, id: 'walk-spawn' }
-  const next = pts[1] ?? spawn
-  return {
-    x: spawn.x,
-    z: spawn.z,
-    rotationY: Math.atan2(next.x - spawn.x, next.z - spawn.z),
-  }
-}
-
-/** Altura do chão no hero — rampa analítica na posição atual (sem lerp entre waypoints) */
-export function getHeroBearGroundY(x: number, z: number): number {
-  return getValeHeroGroundY(x, z)
 }
 
 export interface WalkPathProjection {
@@ -325,7 +307,7 @@ export function sampleValeGroundY(x: number, z: number): ValeGroundSample {
 }
 
 export function getValeGroundY(x: number, z: number): number {
-  return getHeroBearGroundY(x, z)
+  return sampleValeGroundY(x, z).y
 }
 
 export function resetValeGroundY(y = VALE_PATH_GROUND_Y) {

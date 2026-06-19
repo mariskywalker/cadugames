@@ -2,16 +2,18 @@
 
 import { ContactShadows, Loader, useGLTF } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
-import { Component, Suspense, useEffect, type ReactNode } from 'react'
+import { Component, useEffect, type ReactNode } from 'react'
 import * as THREE from 'three'
 import { OPENING_ASSETS } from '@/lib/opening/assets'
 import { playTubeVideo } from '@/lib/opening/tubeVideoElement'
 import { ROOM_STUDIO_FOG } from '@/lib/opening/roomBackdrop'
+import { SCENE_FLOOR_Y } from '@/lib/opening/sceneLayout'
+import { useOpeningSceneEditorStore } from '@/store/useOpeningSceneEditorStore'
 import { useOpeningStore } from '@/store/useOpeningStore'
 import { FixedRoomCamera } from './FixedRoomCamera'
 import { LayeredRoomScene } from './LayeredRoomScene'
 import { Lights } from './Lights'
-import { NavMeshFloor } from './NavMeshFloor'
+import { OpeningSceneBackdropHtml } from './OpeningSceneBackdropHtml'
 
 class SceneErrorBoundary extends Component<
   { children: ReactNode },
@@ -41,6 +43,11 @@ function OpeningSceneInner() {
   const markedCamera = useOpeningStore((s) => s.markedCamera)
   const clearTarget = useOpeningStore((s) => s.clearTarget)
   const resetToIdle = useOpeningStore((s) => s.resetToIdle)
+  const hydrateScene = useOpeningSceneEditorStore((s) => s.hydrate)
+
+  useEffect(() => {
+    hydrateScene()
+  }, [hydrateScene])
 
   useEffect(() => {
     useGLTF.preload(OPENING_ASSETS.bear)
@@ -60,6 +67,7 @@ function OpeningSceneInner() {
   return (
     <SceneErrorBoundary>
       <div className="opening-scene__host">
+        <OpeningSceneBackdropHtml />
         <Canvas
           className="opening-scene__canvas"
           frameloop="always"
@@ -78,24 +86,21 @@ function OpeningSceneInner() {
             scene.background = null
             scene.fog = new THREE.FogExp2(ROOM_STUDIO_FOG.color, ROOM_STUDIO_FOG.density)
             gl.toneMapping = THREE.ACESFilmicToneMapping
-            gl.toneMappingExposure = 1.1
+            gl.toneMappingExposure = 1.05
             gl.outputColorSpace = THREE.SRGBColorSpace
             gl.shadowMap.enabled = true
             gl.shadowMap.type = THREE.PCFSoftShadowMap
           }}
         >
           <Lights />
-          <Suspense fallback={null}>
-            <LayeredRoomScene fixedCamera />
-          </Suspense>
-          <NavMeshFloor />
+          <LayeredRoomScene fixedCamera />
           <ContactShadows
-            position={[0, 0.012, 1.15]}
-            opacity={0.24}
-            scale={11}
-            blur={2.6}
-            far={5.2}
-            color="#C99582"
+            position={[0, SCENE_FLOOR_Y + 0.015, 0]}
+            opacity={0.12}
+            scale={16}
+            blur={2.8}
+            far={6}
+            color="#D890A8"
           />
           <FixedRoomCamera enabled />
         </Canvas>

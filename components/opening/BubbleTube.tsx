@@ -4,12 +4,10 @@ import { useFrame } from '@react-three/fiber'
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { BUBBLE_TUBE_HEIGHT, BUBBLE_TUBE_RADIUS } from '@/lib/opening/animations'
-import { SCENE_OBJECTS, sceneObjectDefaults } from '@/lib/opening/sceneComposition'
+import { useOpeningSceneEditorStore } from '@/store/useOpeningSceneEditorStore'
 import { useOpeningStore } from '@/store/useOpeningStore'
-import { SceneTransform } from './SceneTransform'
+import { OpeningSceneObjectWrap } from './OpeningSceneObjectWrap'
 import { BubbleTubeGlb } from './BubbleTubeGlb'
-
-const TUBE_BASE_SCALE = sceneObjectDefaults(SCENE_OBJECTS.bubbleColumn).scale[0]
 
 const DEFAULT_METRICS = {
   innerRadius: BUBBLE_TUBE_RADIUS * 0.78,
@@ -86,11 +84,11 @@ export function BubbleTube() {
   const causticsRef = useRef<Record<string, { value: number | THREE.Color }> | null>(null)
   const [, setTubeMetrics] = useState(DEFAULT_METRICS)
   const setBubbleTubeCollider = useOpeningStore((s) => s.setBubbleTubeCollider)
-  const defaults = sceneObjectDefaults(SCENE_OBJECTS.bubbleColumn)
+  const tubeScale = useOpeningSceneEditorStore((s) => s.layout.objects.bubbleColumn.scaleX)
 
   useEffect(() => {
-    setBubbleTubeCollider(BUBBLE_TUBE_RADIUS * TUBE_BASE_SCALE + 0.4)
-  }, [setBubbleTubeCollider])
+    setBubbleTubeCollider(BUBBLE_TUBE_RADIUS * tubeScale + 0.4)
+  }, [setBubbleTubeCollider, tubeScale])
 
   const onMetrics = useCallback(
     (m: { innerRadius?: number; height?: number; outerRadius?: number }) => {
@@ -99,10 +97,10 @@ export function BubbleTube() {
         height: m.height ?? DEFAULT_METRICS.height,
       })
       if (m.outerRadius) {
-        setBubbleTubeCollider(m.outerRadius * TUBE_BASE_SCALE + 0.4)
+        setBubbleTubeCollider(m.outerRadius * tubeScale + 0.4)
       }
     },
-    [setBubbleTubeCollider],
+    [setBubbleTubeCollider, tubeScale],
   )
 
   useFrame((state) => {
@@ -112,11 +110,7 @@ export function BubbleTube() {
   })
 
   return (
-    <SceneTransform
-      position={defaults.position}
-      rotation={defaults.rotation}
-      scale={defaults.scale}
-    >
+    <OpeningSceneObjectWrap id="bubbleColumn">
       <group ref={group}>
         <Suspense fallback={<TubeLoadingPlaceholder />}>
           <BubbleTubeGlb onMetrics={onMetrics} />
@@ -126,6 +120,6 @@ export function BubbleTube() {
         <pointLight position={[3.1, 1.4, 1.8]} intensity={0.34} distance={6.5} decay={2} color="#7dd3fc" />
         <pointLight position={[-2.2, 1.2, 2.4]} intensity={0.22} distance={6} decay={2} color="#a8d8f0" />
       </group>
-    </SceneTransform>
+    </OpeningSceneObjectWrap>
   )
 }

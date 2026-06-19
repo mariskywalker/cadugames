@@ -5,7 +5,6 @@ import { useMemo, useRef } from 'react'
 import type { Group, Points } from 'three'
 import { useSceneAnimating } from '@/hooks/opening/useSceneAnimating'
 import { PALETTE } from '@/lib/opening/palette'
-import { SCENE_HUB } from '@/lib/opening/sceneLayout'
 
 function rand01(i: number, s: number) {
   const x = Math.sin(i * 127.1 + s * 311.7) * 43758.5453123
@@ -16,7 +15,7 @@ function AmbientCloud({
   position,
   scale = 1,
   phase = 0,
-  speed = 0.22,
+  speed = 0.16,
   tone = '#FFF8F2',
 }: {
   position: [number, number, number]
@@ -31,8 +30,8 @@ function AmbientCloud({
   useFrame((state) => {
     if (!animating || !g.current) return
     const t = state.clock.elapsedTime * speed + phase
-    g.current.position.y = position[1] + Math.sin(t * 0.35) * 0.12
-    g.current.position.x = position[0] + Math.cos(t * 0.2) * 0.09
+    g.current.position.y = position[1] + Math.sin(t * 0.35) * 0.08
+    g.current.position.x = position[0] + Math.cos(t * 0.2) * 0.06
   })
 
   const mid = tone === '#FFF8F2' ? '#FFF0EB' : '#F5E0DC'
@@ -42,35 +41,34 @@ function AmbientCloud({
     <group ref={g} position={position} scale={scale}>
       <mesh>
         <sphereGeometry args={[0.55, 10, 8]} />
-        <meshBasicMaterial color={tone} transparent opacity={0.78} depthWrite={false} fog />
+        <meshBasicMaterial color={tone} transparent opacity={0.72} depthWrite={false} fog />
       </mesh>
       <mesh position={[0.42, 0.08, 0.1]}>
         <sphereGeometry args={[0.38, 10, 8]} />
-        <meshBasicMaterial color={mid} transparent opacity={0.72} depthWrite={false} fog />
+        <meshBasicMaterial color={mid} transparent opacity={0.66} depthWrite={false} fog />
       </mesh>
       <mesh position={[-0.36, -0.05, 0.05]}>
         <sphereGeometry args={[0.3, 10, 8]} />
-        <meshBasicMaterial color={edge} transparent opacity={0.68} depthWrite={false} fog />
+        <meshBasicMaterial color={edge} transparent opacity={0.62} depthWrite={false} fog />
       </mesh>
     </group>
   )
 }
 
-function AmbientDriftParticles({ count = 28 }: { count?: number }) {
+function AmbientDriftParticles({ count = 36 }: { count?: number }) {
   const points = useRef<Points>(null)
   const animating = useSceneAnimating()
-  const hubZ = SCENE_HUB[2]
 
   const seeds = useMemo(
     () =>
       Array.from({ length: count }, (_, i) => ({
-        x: (rand01(i, 1) * 2 - 1) * 14,
-        y: 2.5 + rand01(i, 2) * 10,
-        z: hubZ + (rand01(i, 3) * 2 - 1) * 10,
+        x: (rand01(i, 1) * 2 - 1) * 16,
+        y: 2.2 + rand01(i, 2) * 9,
+        z: -6 + (rand01(i, 3) * 2 - 1) * 12,
         ph: rand01(i, 4) * Math.PI * 2,
-        sp: 0.04 + rand01(i, 5) * 0.08,
+        sp: 0.03 + rand01(i, 5) * 0.06,
       })),
-    [count, hubZ],
+    [count],
   )
 
   const positions = useMemo(() => {
@@ -89,9 +87,9 @@ function AmbientDriftParticles({ count = 28 }: { count?: number }) {
     const attr = points.current.geometry.attributes.position
     for (let i = 0; i < count; i++) {
       const p = seeds[i]
-      attr.array[i * 3] = p.x + Math.sin(t * p.sp + p.ph) * 0.15
-      attr.array[i * 3 + 1] = p.y + Math.cos(t * p.sp * 0.9 + p.ph) * 0.1
-      attr.array[i * 3 + 2] = p.z + Math.sin(t * p.sp * 0.7 + p.ph) * 0.08
+      attr.array[i * 3] = p.x + Math.sin(t * p.sp + p.ph) * 0.12
+      attr.array[i * 3 + 1] = p.y + Math.cos(t * p.sp * 0.9 + p.ph) * 0.08
+      attr.array[i * 3 + 2] = p.z + Math.sin(t * p.sp * 0.7 + p.ph) * 0.06
     }
     attr.needsUpdate = true
   })
@@ -103,9 +101,9 @@ function AmbientDriftParticles({ count = 28 }: { count?: number }) {
       </bufferGeometry>
       <pointsMaterial
         color={PALETTE.cream}
-        size={0.06}
+        size={0.05}
         transparent
-        opacity={0.28}
+        opacity={0.34}
         depthWrite={false}
         sizeAttenuation
         fog
@@ -115,17 +113,16 @@ function AmbientDriftParticles({ count = 28 }: { count?: number }) {
 }
 
 export function LayerAmbient({ calm = false }: { calm?: boolean }) {
-  const hubZ = SCENE_HUB[2]
   return (
     <group>
-      <AmbientCloud position={[-5.2, 5.8, hubZ - 6]} scale={1.05} phase={0} speed={0.14} />
-      <AmbientCloud position={[5.4, 6.0, hubZ - 5.8]} scale={0.95} phase={1.4} speed={0.13} />
-      <AmbientCloud position={[-2.5, 7.1, hubZ - 8]} scale={0.8} phase={2.8} speed={0.12} tone="#FFF2EC" />
-      <AmbientCloud position={[1.8, 6.4, hubZ - 9.5]} scale={1.15} phase={4.1} speed={0.11} tone="#FFF0EB" />
+      <AmbientCloud position={[-6.5, 5.4, -8]} scale={1.15} phase={0} speed={0.1} />
+      <AmbientCloud position={[6.8, 5.8, -7.5]} scale={1.05} phase={1.4} speed={0.09} />
+      <AmbientCloud position={[-2.8, 6.6, -10]} scale={0.9} phase={2.8} speed={0.08} tone="#FFF2EC" />
+      <AmbientCloud position={[2.2, 6.1, -11]} scale={1.2} phase={4.1} speed={0.07} tone="#FFF0EB" />
       {!calm && (
-        <AmbientCloud position={[-7.2, 5.2, hubZ - 10]} scale={0.72} phase={5.5} speed={0.1} tone="#F5D8D4" />
+        <AmbientCloud position={[-8.5, 4.8, -12]} scale={0.75} phase={5.5} speed={0.06} tone="#F5D8D4" />
       )}
-      <AmbientDriftParticles count={calm ? 16 : 28} />
+      <AmbientDriftParticles count={calm ? 24 : 36} />
     </group>
   )
 }

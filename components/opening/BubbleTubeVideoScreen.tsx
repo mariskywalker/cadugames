@@ -9,6 +9,7 @@ import {
   releaseTubeVideo,
 } from '@/lib/opening/tubeVideoElement'
 import { useSceneAnimating } from '@/hooks/opening/useSceneAnimating'
+import { OPENING_INTERACTIVE_RENDER_ORDER } from '@/lib/opening/openingSceneEditorLayout'
 
 const VERTEX = `
   varying vec3 vLocalPos;
@@ -145,7 +146,7 @@ export function BubbleTubeVideoScreen({
   })
 
   return (
-    <mesh position={[0, centerY, 0]} renderOrder={12} material={material}>
+    <mesh position={[0, centerY, 0]} renderOrder={OPENING_INTERACTIVE_RENDER_ORDER} material={material}>
       <cylinderGeometry args={[radius * 0.985, radius * 0.985, height, 80, 1, true]} />
     </mesh>
   )

@@ -1,11 +1,19 @@
 'use client'
 
 import { CADU_LAYOUT, HOME_ASSETS } from '@/lib/home/assets'
+import { buildHomeCaduStackStyle } from '@/lib/home/homeCaduEditorLayout'
 import { useParallaxPointer } from '@/hooks/home/useParallaxPointer'
+import { useHomeCaduEditorStore } from '@/store/useHomeCaduEditorStore'
 import { HomeMissionStack } from './HomeMissionStack'
 import { HomeAmbientLife } from './HomeAmbientLife'
 import { HomeIntroSpeech } from './HomeIntroSpeech'
 import { SkyFloatingClouds } from './SkyFloatingClouds'
+import {
+  HomeCaduEditorSelection,
+  useHomeCaduDrag,
+  useHomeCaduEditorHydrate,
+  useHomeWideLayout,
+} from './HomeCaduEditorTools'
 import { todayMission } from '@/lib/mockChildProfile'
 import type { ChildProfile } from '@/lib/types'
 import Link from 'next/link'
@@ -13,12 +21,17 @@ import Link from 'next/link'
 export function HomeScene({
   child,
   onExploreRoom,
+  editorMode = false,
 }: {
   child: ChildProfile
   onExploreRoom: () => void
+  editorMode?: boolean
 }) {
+  useHomeCaduEditorHydrate()
+  const layout = useHomeCaduEditorStore((s) => s.layout)
+  const wide = useHomeWideLayout()
+  const { onPointerDown, onPointerMove, onPointerUp } = useHomeCaduDrag(editorMode)
   const { rootRef, offset } = useParallaxPointer(6)
-  const layout = CADU_LAYOUT
 
   const tiltX = offset.y * -0.028
   const tiltY = offset.x * 0.028
@@ -26,8 +39,12 @@ export function HomeScene({
   const shiftY = offset.y * 0.15
   const bgShiftX = offset.x * 0.06
   const bgShiftY = offset.y * 0.06
-  const caduTx = offset.x * layout.parallaxDepth
-  const caduTy = offset.y * layout.parallaxDepth
+  const parallax = editorMode ? 0 : CADU_LAYOUT.parallaxDepth
+  const caduTx = offset.x * parallax
+  const caduTy = offset.y * parallax
+
+  const bottomPercent = wide ? layout.bottomPercentWide : layout.bottomPercent
+  const stackStyle = buildHomeCaduStackStyle(layout, wide)
 
   return (
     <main ref={rootRef} className="home-scene" aria-label="Mundo CADU">
@@ -54,14 +71,14 @@ export function HomeScene({
       <HomeMissionStack />
 
       <div
-        className="home-scene__cadu-wrap"
+        className={`home-scene__cadu-wrap${editorMode ? ' home-scene__cadu-wrap--editable' : ''}`}
         style={{
           left: `${layout.anchorXPercent}%`,
-          bottom: `${layout.bottomPercent}%`,
-          transform: `translate3d(calc(-50% + ${caduTx}px), ${caduTy}px, 0)`,
+          bottom: `${bottomPercent}%`,
+          transform: `translate3d(calc(-50% + ${layout.offsetX + caduTx}px), ${layout.offsetY + caduTy}px, 0)`,
         }}
       >
-        <div className="home-scene__cadu-stack">
+        <div className="home-scene__cadu-stack" style={stackStyle}>
           <div className="home-scene__palco-wrap" aria-hidden>
             <img
               className="home-scene__palco"
@@ -71,13 +88,25 @@ export function HomeScene({
               decoding="async"
             />
           </div>
-          <img
-            className="home-scene__cadu"
-            src={HOME_ASSETS.cadu}
-            alt="CADU"
-            draggable={false}
-            decoding="async"
-          />
+          <div className="home-scene__cadu-hit">
+            <HomeCaduEditorSelection editorMode={editorMode} />
+            <img
+              className={`home-scene__cadu${editorMode ? ' home-scene__cadu--editable' : ''}${layout.floatEnabled && !editorMode ? '' : ' home-scene__cadu--static'}`}
+              src={HOME_ASSETS.cadu}
+              alt="CADU"
+              draggable={false}
+              decoding="async"
+              style={{
+                transform: `rotate(${layout.rotateDeg}deg) scale(${layout.scale})`,
+                opacity: layout.opacity,
+                filter: `drop-shadow(0 ${layout.shadowY}px ${layout.shadowBlur}px rgba(92, 45, 58, ${layout.shadowAlpha}))`,
+              }}
+              onPointerDown={onPointerDown}
+              onPointerMove={onPointerMove}
+              onPointerUp={onPointerUp}
+              onPointerCancel={onPointerUp}
+            />
+          </div>
         </div>
       </div>
 

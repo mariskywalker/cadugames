@@ -12,6 +12,7 @@ import {
 import { measureBubbleTubeGeometry } from '@/lib/opening/bubbleTubeMetrics'
 import { makeCelMaterial } from '@/lib/opening/celShade'
 import { SCENE_OBJECTS, sceneObjectDefaults } from '@/lib/opening/sceneComposition'
+import { OPENING_INTERACTIVE_RENDER_ORDER } from '@/lib/opening/openingSceneEditorLayout'
 import { BubbleTubeVideoScreen } from './BubbleTubeVideoScreen'
 
 const TUBE_BASE_SCALE = sceneObjectDefaults(SCENE_OBJECTS.bubbleColumn).scale[0]
@@ -49,7 +50,7 @@ function applyTubeMaterials(
     if (!mesh?.isMesh) return
     mesh.castShadow = true
     mesh.receiveShadow = true
-    mesh.renderOrder = 1
+    mesh.renderOrder = OPENING_INTERACTIVE_RENDER_ORDER
 
     const box = new THREE.Box3().setFromObject(mesh)
     box.getSize(_size)
@@ -161,7 +162,7 @@ export function BubbleTubeGlb({
   return (
     <group ref={rootRef} scale={transform.scale} position={[0, transform.yOffset, 0]}>
       <primitive object={tubeGroup} />
-      <mesh position={[0, baseY, 0]} renderOrder={2}>
+      <mesh position={[0, baseY, 0]} renderOrder={OPENING_INTERACTIVE_RENDER_ORDER}>
         <cylinderGeometry args={[shell.localOuterRadius * 1.02, shell.localOuterRadius * 1.02, baseH, 48]} />
         <meshStandardMaterial color="#eef2f7" roughness={0.92} metalness={0} />
       </mesh>

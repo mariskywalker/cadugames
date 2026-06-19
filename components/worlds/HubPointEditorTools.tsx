@@ -3,6 +3,27 @@
 import { useHubPointEditorMode } from '@/hooks/worlds/useHubPointEditorMode'
 import { HubPointEditorPanel } from './HubPointEditorPanel'
 
+export function HubPointEditorFab({
+  editorMode,
+  onToggle,
+}: {
+  editorMode: boolean
+  onToggle: () => void
+}) {
+  if (editorMode) return null
+  return (
+    <button
+      type="button"
+      className="hub-point-editor-fab"
+      onClick={onToggle}
+      aria-label="Abrir editor de hotspots"
+    >
+      <span aria-hidden>📍</span>
+      <span>Hotspots</span>
+    </button>
+  )
+}
+
 function HubPointEditorToolsStandalone() {
   const { editorMode, setEditorMode, message, setMessage } = useHubPointEditorMode()
   if (!editorMode) return null

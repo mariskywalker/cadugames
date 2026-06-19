@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef } from 'react'
 import type { Group } from 'three'
+import { getValeHeroGroundY } from '@/lib/vale/valeWorld'
 import {
   VALE_WALK_DEBUG,
   WALKABLE_LAYER,
@@ -11,7 +12,6 @@ import {
   unregisterValeWalkable,
   type ValeWalkPathPoint,
 } from '@/lib/vale/valeWalkable'
-import { VALE_HERO_MODE, getValeHeroGroundY } from '@/lib/vale/valeWorld'
 import { useValeWalkPathEditorStore } from '@/store/useValeWalkPathEditorStore'
 
 type SegmentSpec = {
@@ -71,7 +71,6 @@ export function ValeWalkablePath() {
   }, [hydrate])
 
   useEffect(() => {
-    if (VALE_HERO_MODE) return
     const root = rootRef.current
     if (!root) return
     root.userData.walkable = true

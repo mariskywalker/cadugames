@@ -1,4 +1,6 @@
-import { ACTIVITY_BARS_APPROACH_ZONE, NAV_OBSTACLES, NAV_ZONE } from './sceneComposition'
+import { ACTIVITY_BARS_APPROACH_ZONE, NAV_ZONE } from './sceneComposition'
+import type { OpeningSceneLayout } from './openingSceneEditorLayout'
+import { getOpeningNavObstacles } from './openingNavMesh'
 import { pushOutOfTubeXZ, type TubeCollider } from './tubeNav'
 
 function pushOutOfCircleXZ(
@@ -36,14 +38,20 @@ export function isInsideActivityBarsApproachZone(x: number, z: number) {
   return dx * dx + dz * dz <= ACTIVITY_BARS_APPROACH_ZONE.radius ** 2
 }
 
-export function clampToNavMesh(x: number, z: number, bubbleTubeCollider: TubeCollider | null) {
+export function clampToNavMesh(
+  x: number,
+  z: number,
+  bubbleTubeCollider: TubeCollider | null,
+  layout?: OpeningSceneLayout,
+) {
   let px = x
   let pz = z
   ;[px, pz] = clampToEllipse(px, pz)
 
   const barsApproachOpen = isInsideActivityBarsApproachZone(px, pz)
+  const obstacles = layout ? getOpeningNavObstacles(layout) : []
 
-  for (const obstacle of NAV_OBSTACLES) {
+  for (const obstacle of obstacles) {
     if (obstacle.id === 'activityBars' && barsApproachOpen) continue
     ;[px, pz] = pushOutOfCircleXZ(px, pz, obstacle.center, obstacle.radius, obstacle.pad ?? 0.42)
   }

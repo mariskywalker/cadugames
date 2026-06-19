@@ -9,6 +9,9 @@ const NATIVE_Y = 0.12
 const IMMERSIVE_ISLAND_SIZE = 11
 const IMMERSIVE_MIN_SIZE = 7
 
+/** Painéis estreitos (browser do IDE) não devem “afastar” a câmera em relação ao Chrome em tela cheia */
+const VALE_COMPOSITION_MIN_ASPECT = 1.55
+
 const LEGACY_DESIRED_SIZE = 5
 const LEGACY_MIN_SIZE = 2.2
 const LEGACY_PADDING = { x: 0.1, y: 0.1 }
@@ -154,8 +157,9 @@ export function computeValeComposition(
   layout: ValeCameraLayout = DEFAULT_VALE_CAMERA_LAYOUT,
 ): ValeComposition {
   const aspect = width / Math.max(height, 1)
-  const fov = computeValeFovForLayout(aspect, layout.fov)
-  const islandSize = computeIslandTargetSize(aspect, fov, layout)
+  const compositionAspect = Math.max(aspect, VALE_COMPOSITION_MIN_ASPECT)
+  const fov = computeValeFovForLayout(compositionAspect, layout.fov)
+  const islandSize = computeIslandTargetSize(compositionAspect, fov, layout)
   return { islandSize, fov }
 }
 
